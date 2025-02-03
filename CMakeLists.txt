@@ -1,13 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.12.0)
 
-cmake_policy(SET CMP0003 NEW) # don't be prolific with library paths
-cmake_policy(SET CMP0005 NEW) # proper define quoting
-cmake_policy(SET CMP0009 NEW) # don't follow symbolic links when using GLOB
-
-if(POLICY CMP0075)
-    cmake_policy(SET CMP0075 NEW) # link check-executable to CMAKE_REQUIRED_LIBRARIES (CMake 3.12.1)
-endif(POLICY CMP0075)
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 NEW) # use FindBoost from boost 1.70+ (cmake 3.30+)
+endif()
 
 message("------------------------------")
 message("Building Makefile for Inkscape")
