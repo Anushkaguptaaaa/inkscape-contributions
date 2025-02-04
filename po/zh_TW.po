@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: inkscape\n"
 "Report-Msgid-Bugs-To: inkscape-translator@lists.inkscape.org\n"
 "POT-Creation-Date: 2024-09-10 01:35+0800\n"
-"PO-Revision-Date: 2025-02-04 13:51+0000\n"
+"PO-Revision-Date: 2025-02-04 14:31+0000\n"
 "Last-Translator: Wen-Wei Kao <ltlnx@disroot.org>\n"
 "Language-Team: Chinese (Traditional Han script) <http://5.102.147.179/"
 "projects/inkscape/inkscape-master/zh_Hant/>\n"
@@ -3324,23 +3324,20 @@ msgid "Rain drops vertical"
 msgstr "垂直雨滴"
 
 #: ../build/share/paint/patterns.svg.h:1
-#, fuzzy
 msgid "Circle diagonal fill 2"
-msgstr "圓形填滿 2"
+msgstr "圓形對角線填滿 2"
 
 #: ../build/share/paint/patterns.svg.h:1
-#, fuzzy
 msgid "Circle vertical fill 3"
-msgstr "圓形填滿 3"
+msgstr "垂直圓形填滿 3"
 
 #: ../build/share/paint/patterns.svg.h:1
 msgid "Inverted braid"
 msgstr "反相編織"
 
 #: ../build/share/paint/patterns.svg.h:1
-#, fuzzy
 msgid "Rain drops horizontal"
-msgstr "水平翻轉"
+msgstr "水平雨滴"
 
 #: ../build/share/paint/patterns.svg.h:1
 msgid "Abstract fill 2"
@@ -3351,9 +3348,8 @@ msgid "Abstract fill 3"
 msgstr "抽象填滿 3"
 
 #: ../build/share/paint/patterns.svg.h:1
-#, fuzzy
 msgid "Pills diagonal"
-msgstr "對角"
+msgstr "對角線膠囊狀"
 
 #: ../build/share/paint/patterns.svg.h:1
 msgid "Abstract 1"
