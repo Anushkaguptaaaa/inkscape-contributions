@@ -22,16 +22,16 @@ msgstr ""
 "Project-Id-Version: inkscape\n"
 "Report-Msgid-Bugs-To: inkscape-translator@lists.inkscape.org\n"
 "POT-Creation-Date: 2024-09-24 13:17+0000\n"
-"PO-Revision-Date: 2024-09-25 19:25+0200\n"
-"Last-Translator: Marc Jeanmougin <marc.jeanmougin+ink-tr@telecom-paris.fr>\n"
-"Language-Team: français <>\n"
-"Language: fr_FR\n"
+"PO-Revision-Date: 2025-02-04 22:30+0000\n"
+"Last-Translator: Weblate Admin <devops@lists.inkscape.org>\n"
+"Language-Team: French <http://5.102.147.179/projects/inkscape/1-4-x/fr/>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.9.2\n"
 "X-Poedit-Bookmarks: 46,-1,-1,-1,-1,-1,-1,-1,-1,-1\n"
-"X-Generator: Poedit 3.4.2\n"
 
 #: ../build/share/filters/filters.svg.h:2
 msgid "Fast Crop"
@@ -15587,8 +15587,8 @@ msgid ""
 "Method used to convert pre-0.92 document dpi, if needed: [none|scale-viewbox|"
 "scale-document]"
 msgstr ""
-"Méthode employée pour convertir les ppp des documents en version antérieure à "
-"0.92, si nécessaire ([none|scale-viewbox|scale-document])."
+"Méthode employée pour convertir les ppp des documents en version antérieure "
+"à 0.92, si nécessaire [none|scale-viewbox|scale-document]"
 
 #: ../src/inkscape-application.cpp:734
 msgid "METHOD"
@@ -15678,7 +15678,7 @@ msgstr "PPP"
 
 #: ../src/inkscape-application.cpp:751
 msgid "Bitmap width in pixels (overrides --export-dpi)"
-msgstr "Largeur en pixels de l'image matricielle (préempte --export-dpi)."
+msgstr "Largeur en pixels de l'image matricielle (préempte --export-dpi)"
 
 #: ../src/inkscape-application.cpp:751
 msgid "WIDTH"
@@ -15686,7 +15686,7 @@ msgstr "LARGEUR"
 
 #: ../src/inkscape-application.cpp:752
 msgid "Bitmap height in pixels (overrides --export-dpi)"
-msgstr "Hauteur en pixels de l'image matricielle (préempte --export-dpi)."
+msgstr "Hauteur en pixels de l'image matricielle (préempte --export-dpi)"
 
 #: ../src/inkscape-application.cpp:752
 msgid "HEIGHT"
@@ -16460,7 +16460,7 @@ msgstr "Tranche"
 
 #: ../src/live_effects/effect.cpp:658
 msgid "Slices the item into parts. It can also be applied multiple times."
-msgstr "Découpe l'objet en parties (peut être appliqué plusieurs fois)"
+msgstr "Découpe l'objet en parties (peut être appliqué plusieurs fois)."
 
 #: ../src/live_effects/effect.cpp:670
 msgctxt "path effect"
@@ -27309,7 +27309,8 @@ msgstr "Créer des textes encadrés SVG 2"
 #: ../src/ui/dialog/inkscape-preferences.cpp:1072
 msgid "Use SVG2 auto-flowed text instead of SVG1.2 auto-flowed text. (Recommended)"
 msgstr ""
-"Créer les textes encadrés au format SVG 2 au lieu du format SVG 1.2 (recommandé)."
+"Créer les textes encadrés au format SVG 2 au lieu du format SVG 1.2 "
+"(recommandé)"
 
 #: ../src/ui/dialog/inkscape-preferences.cpp:1075
 msgid "Fonts in 'Recently used' collection:"
@@ -28810,8 +28811,8 @@ msgid ""
 "Force repeating of the same path command (for example, 'L 1,2 L 3,4' instead of "
 "'L 1,2 3,4')"
 msgstr ""
-"Si coché, impose la répétition de la même commande de chemin (écrit 'L 1,2 L 3,4' "
-"à la place de 'L 1,2 3,4')."
+"Impose la répétition de la même commande de chemin (écrit 'L 1,2 L 3,4' à la "
+"place de 'L 1,2 3,4')"
 
 #: ../src/ui/dialog/inkscape-preferences.cpp:2314
 msgid "Numbers"
