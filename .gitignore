@@ -42,6 +42,7 @@ cmake_uninstall.cmake
 
 # Translations
 po/*.gmo
+po/*.mo
 
 # Generated Man pages
 man/*.1
