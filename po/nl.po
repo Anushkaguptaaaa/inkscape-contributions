@@ -58,15 +58,16 @@ msgstr ""
 "Project-Id-Version: inkscape 1.0\n"
 "Report-Msgid-Bugs-To: inkscape-translator@lists.inkscape.org\n"
 "POT-Creation-Date: 2024-09-28 10:42+0000\n"
-"PO-Revision-Date: 2024-10-01 09:06+0200\n"
+"PO-Revision-Date: 2025-02-20 16:06+0000\n"
 "Last-Translator: Stephan Paternotte <stephan@paternottes.net>\n"
-"Language-Team: Dutch\n"
+"Language-Team: Dutch <https://translate.inkscape.org/projects/inkscape/1-4-x/"
+"nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.9.2\n"
 
 #: ../build/share/filters/filters.svg.h:2
 msgid "Fast Crop"
@@ -4926,7 +4927,7 @@ msgstr "Fastfood 2"
 #: ../build/share/symbols/symbols.h:427 ../build/share/symbols/symbols.h:438
 msgctxt "Symbol"
 msgid "Fast food (pizza)"
-msgstr "Fast food (pizza)"
+msgstr "Fastfood (pizza)"
 
 #: ../build/share/symbols/symbols.h:428 ../build/share/symbols/symbols.h:439
 msgctxt "Symbol"
@@ -5497,7 +5498,7 @@ msgstr "Golf"
 #: ../build/share/symbols/symbols.h:652 ../build/share/symbols/symbols.h:680
 msgctxt "Symbol"
 msgid "Gym"
-msgstr "Gym"
+msgstr "Sportschool"
 
 #: ../build/share/symbols/symbols.h:653 ../build/share/symbols/symbols.h:681
 msgctxt "Symbol"
@@ -5802,7 +5803,7 @@ msgstr "Noodtelefoon"
 #: ../build/share/symbols/symbols.h:779 ../build/share/symbols/symbols.h:823
 msgctxt "Symbol"
 msgid "Ford"
-msgstr "Ford"
+msgstr "Doorwaadbare plaats"
 
 #: ../build/share/symbols/symbols.h:780 ../build/share/symbols/symbols.h:824
 msgctxt "Symbol"
@@ -9599,7 +9600,7 @@ msgstr "Selecteren per SVG-element"
 
 #: ../src/actions/actions-selection.cpp:280
 msgid "Select by SVG element (e.g. 'rect')"
-msgstr "Selecteren per SVG-element (bv. 'rect')."
+msgstr "Selecteren per SVG-element (bv. 'rect')"
 
 #: ../src/actions/actions-selection.cpp:281
 msgid "Select by Selector"
@@ -9619,9 +9620,9 @@ msgid ""
 "layers' (top level objects in layers), 'groups' (all groups including layers), "
 "'no-groups' (all objects other than groups and layers, default)"
 msgstr ""
-"Alles selecteren; opties: 'all' (elk object inclusief groepen), 'layers', 'no-"
-"layers' (top level objecten in lagen), 'groups' (alle groepen inclusief "
-"lagen), 'no-groups' (alle objecten behalve groepen en lagen, standaard)."
+"Alles selecteren; opties: 'all' (elk object inclusief groepen), 'layers', "
+"'no-layers' (top level objecten in lagen), 'groups' (alle groepen inclusief "
+"lagen), 'no-groups' (alle objecten behalve groepen en lagen, standaard)"
 
 #: ../src/actions/actions-selection.cpp:283
 msgid "List Selection"
@@ -11085,9 +11086,9 @@ msgid ""
 "  This is caused by an improper .inx file for this extension.  An improper ."
 "inx file could have been caused by a faulty installation of Inkscape."
 msgstr ""
-" Dit wordt veroorzaakt door een foutief .inx-bestand voor deze uitbreiding. "
-"Een foutief .inx-bestand kan worden veroorzaakt door een fout tijdens de "
-"installatie van Inkscape."
+"  Dit wordt veroorzaakt door een incorrect .inx-bestand voor deze "
+"uitbreiding.  Een incorrect .inx-bestand kan worden veroorzaakt door een "
+"foutieve installatie van Inkscape."
 
 #: ../src/extension/extension.cpp:263
 msgid "the XML description of it got lost."
@@ -11309,7 +11310,7 @@ msgstr "Sigma:"
 # hier wel een punt in vertaling in verband met overeenkomst met de andere tips in de toolbar voor andere uitbreidingen
 #: ../src/extension/internal/bitmap/blur.cpp:49
 msgid "Blur selected bitmap(s)"
-msgstr "Geselecteerde bitmaps vervagen."
+msgstr "Geselecteerde bitmap(s) vervagen"
 
 #: ../src/extension/internal/bitmap/channel.cpp:50
 msgid "Channel"
@@ -11398,7 +11399,7 @@ msgstr "Aanpassen:"
 # hier wel een punt in vertaling in verband met overeenkomst met de andere tips in de toolbar voor andere uitbreidingen
 #: ../src/extension/internal/bitmap/contrast.cpp:50
 msgid "Increase or decrease contrast in bitmap(s)"
-msgstr "Contrast in bitmap(s) verhogen of verlagen."
+msgstr "Contrast in bitmap(s) verhogen of verminderen"
 
 #: ../src/extension/internal/bitmap/crop.cpp:69
 #: ../src/extension/internal/filter/bumps.h:88
@@ -12797,7 +12798,7 @@ msgstr "Normaal licht"
 
 #: ../src/extension/internal/filter/color.h:417
 msgid "Duotone"
-msgstr "Duotone"
+msgstr "Duotoon"
 
 #: ../src/extension/internal/filter/color.h:418
 #: ../src/extension/internal/filter/color.h:1551
@@ -13846,7 +13847,7 @@ msgstr "Extractie:"
 
 #: ../src/extension/internal/filter/textures.h:81
 msgid "Overlapping"
-msgstr "Overlapping"
+msgstr "Overlappend"
 
 #: ../src/extension/internal/filter/textures.h:82
 #: ../share/ui/dialog-document-resources.glade:36
@@ -15134,16 +15135,17 @@ msgid ""
 "The appearance of elements such as clips, masks, filters, and clones\n"
 "is most important. <b>(Choose if unsure.)</b>"
 msgstr ""
-"De weergave van elementen zoals afsnijdingen, maskers, fileters en klonen is "
-"het belangrijkste. <b>(Kies indien onzeker.)</b>"
+"De weergave van elementen zoals afsnijdingen, maskers, filters en klonen\n"
+"is het belangrijkste. <b>(Kies indien onzeker.)</b>"
 
 #: ../src/file-update.cpp:332
 msgid ""
 "The accuracy of the physical unit size and position values of objects\n"
 "in the file is most important. (Experimental.)"
 msgstr ""
-"De nauwkeurigheid van eenheid en posities van objecten is het belangrijkste. "
-"(Experimenteel.)"
+"De nauwkeurigheid van de fysieke eenheid, grootte en positiewaarden van "
+"objecten\n"
+"in het bestand is het belangrijkst. (Experimenteel.)"
 
 #: ../src/file-update.cpp:334
 msgid "Create a backup file in same directory."
@@ -15176,23 +15178,25 @@ msgid ""
 "More information about this change are available in the <a href='https://"
 "inkscape.org/en/learn/faq#dpi_change'>Inkscape FAQ</a></small>"
 msgstr ""
-"<small>We hebben Inkscape geüpdatet conform de CSS standaard van 96 DPI voor "
-"betere browsercompatibiliteit; Voordien werd 90 DPI gehanteerd. \n"
-"Digitale illustraties voor schermweergave worden geconverteerd naar 96 DPI "
-"zonder schaling en zouden onaangetast blijven.\n"
-"Illustraties voor een specifieke fysieke grootte die zijn getekend bij 90 DPI "
-"zullen te klein zijn als ze zonder schaling worden geconverteerd naar 96 DPI. "
-"Er zijn twee methodes om te schalen:\n"
-"<b>Het hele document schalen:</b> De minst foutgevoelige methode. Dit behoudt "
-"het uiterlijk van de illustratie, inclusief filters, maskerposities, etc.\n"
+"<small>We hebben Inkscape bijgewerkt conform de CSS standaard van 96 DPI "
+"voor betere compatibiliteit met webbrowsers; Voorheen werd 90 DPI "
+"gehanteerd. \n"
+"Digitale illustraties voor weergave op scherm worden zonder schaking "
+"geconverteerd naar 96 DPI en zouden onaangetast blijven.\n"
+"Illustraties voor een specifieke fysieke grootte die zijn getekend bij 90 "
+"DPI zullen te klein zijn als ze zonder schaling worden geconverteerd naar 96 "
+"DPI. Er zijn twee methodes om te schalen:\n"
+"<b>Het hele document schalen:</b> Dit is de minst foutgevoelige methode. Dit "
+"behoudt het uiterlijk van de illustratie, inclusief filters, maskerposities, "
+"etc.\n"
 "\n"
 "<b>Individuele elementen uit de illustratie schalen:</b> Deze methode is "
 "minder betrouwbaar en kan het uiterlijk veranderen,\n"
 "maar is beter voor fysieke output die afhankelijk is van nauwkeurige "
 "afmetingen en posities (bv. voor 3D en).\n"
 "\n"
-"Meer informatie hierover is beschikbaar in de <a href='https://inkscape.org/en/"
-"learn/faq#dpi_change'>Inkscape FAQ</a></small>"
+"Meer informatie hierover is beschikbaar in de <a href='https://inkscape.org/"
+"en/learn/faq#dpi_change'>Inkscape FAQ</a></small>"
 
 #: ../src/file-update.cpp:373 ../share/ui/attribute-edit-component.glade:210
 msgid "OK"
@@ -15966,7 +15970,7 @@ msgid ""
 "Color mode (bit depth and color type) for exported bitmaps (Gray_1/Gray_2/"
 "Gray_4/Gray_8/Gray_16/RGB_8/RGB_16/GrayAlpha_8/GrayAlpha_16/RGBA_8/RGBA_16)"
 msgstr ""
-"Kleurmodus (bitdiepte en type)  voor geëxporteerde bitmaps (Gray_1/Gray_2/"
+"Kleurmodus (kleurdiepte en -type) voor geëxporteerde bitmaps (Gray_1/Gray_2/"
 "Gray_4/Gray_8/Gray_16/RGB_8/RGB_16/GrayAlpha_8/GrayAlpha_16/RGBA_8/RGBA_16)"
 
 #: ../src/inkscape-application.cpp:770
@@ -20041,7 +20045,7 @@ msgstr ""
 
 #: ../src/live_effects/lpe-sketch.cpp:41
 msgid "Overlap max."
-msgstr "Overlap max."
+msgstr "Max. overlapping"
 
 #: ../src/live_effects/lpe-sketch.cpp:42
 msgid "How much successive strokes should overlap (relative to maximum length)"
@@ -20051,7 +20055,7 @@ msgstr ""
 
 #: ../src/live_effects/lpe-sketch.cpp:43
 msgid "Overlap"
-msgstr "Overlap"
+msgstr "Overlapping"
 
 #: ../src/live_effects/lpe-sketch.cpp:44
 msgid "Random variation of overlap (relative to maximum overlap)"
@@ -20781,7 +20785,7 @@ msgid ""
 "(otherwise, they define a general transform)."
 msgstr ""
 "2 opeenvolgende segmenten worden enkel gebruikt om de oriëntatie terug te "
-"draaien/weerhouden (anders definiëren ze een algemene transformatie)"
+"draaien/weerhouden (anders definiëren ze een algemene transformatie)."
 
 #: ../src/live_effects/lpe-vonkoch.cpp:51
 msgid "Dra_w all generations"
@@ -21190,7 +21194,7 @@ msgstr "%d &#215; %d: %s"
 
 #: ../src/object/sp-image.cpp:552
 msgid "{Broken Image}"
-msgstr "{Broken Image}"
+msgstr "{Beschadigde afbeelding}"
 
 #: ../src/object/sp-item-group.cpp:310 ../src/ui/dialog/layer-properties.cpp:214
 #: ../src/ui/dialog/layer-properties.cpp:224
@@ -21472,7 +21476,7 @@ msgstr "<b>Geen objecten geselecteerd</b> om te converteren naar een pad."
 
 #: ../src/path-chemistry.cpp:651
 msgid "Select <b>path(s)</b> to reverse."
-msgstr "Selecteer <b>pad(en)</b> om om te keren."
+msgstr "Selecteer om te keren <b>pad(en)</b>."
 
 #: ../src/path-chemistry.cpp:659
 msgid "Reversing paths..."
@@ -21484,7 +21488,7 @@ msgstr "Pad omkeren"
 
 #: ../src/path-chemistry.cpp:696
 msgid "<b>No paths</b> to reverse in the selection."
-msgstr "<b>Geen pad(en) geselecteerd</b> om om te keren."
+msgstr "Selectie bevat <b>geen pad(en)</b> om om te keren."
 
 #: ../src/path/path-boolop.cpp:73
 msgid "Cut path"
@@ -22332,8 +22336,8 @@ msgstr[1] "<b>%1$i</b> objecten geselecteerd van de typen %2$s"
 #, c-format
 msgid "; <i>%d filtered object</i> "
 msgid_plural "; <i>%d filtered objects</i> "
-msgstr[0] "; <i>%d gefilterd object</i>  "
-msgstr[1] "; <i>%d gefilterde objecten</i>  "
+msgstr[0] "; <i>%d gefilterd object</i> "
+msgstr[1] "; <i>%d gefilterde objecten</i> "
 
 #: ../src/seltrans.cpp:491 ../src/ui/dialog/transformation.cpp:924
 msgid "Skew"
@@ -24905,7 +24909,7 @@ msgstr "Waarden"
 
 #: ../src/ui/dialog/filter-effects-dialog.cpp:984
 msgid "List of stops with interpolated output"
-msgstr "Lijst van haltes  met geïnterpoleerde uitvoer"
+msgstr "Lijst van tussenstappen met geïnterpoleerde uitvoer"
 
 #: ../src/ui/dialog/filter-effects-dialog.cpp:987
 msgid "List of discrete values for a step function"
@@ -26523,7 +26527,7 @@ msgstr "SignWriting"
 
 #: ../src/ui/dialog/glyphs.cpp:215
 msgid "Basic Plane"
-msgstr "Basic Plane"
+msgstr "Basisvlak"
 
 #: ../src/ui/dialog/glyphs.cpp:216
 msgid "Extended Multilingual Plane"
@@ -26575,7 +26579,7 @@ msgstr "Arabisch, supplement"
 
 #: ../src/ui/dialog/glyphs.cpp:234
 msgid "NKo"
-msgstr "NKo"
+msgstr "N'Ko"
 
 #: ../src/ui/dialog/glyphs.cpp:251
 msgid "Hangul Jamo"
@@ -27485,9 +27489,9 @@ msgid ""
 "If on, the sketch result will be the normal average of all sketches made, "
 "instead of averaging the old result with the new sketch"
 msgstr ""
-"Indien aangevinkt, wordt het resultaat het gemiddelde van alle gemaakte "
-"schetsen, in plaats van het het oude resultaat met de nieuwe schets uit te "
-"middelen"
+"Als dit aanstaat, is het schetsresultaat het normale gemiddelde van alle "
+"gemaakte schetsen, in plaats van het gemiddelde van het oude resultaat met "
+"de nieuwe schets"
 
 #: ../src/ui/dialog/inkscape-preferences.cpp:1055
 msgid ""
@@ -31798,7 +31802,7 @@ msgstr "Stijlelementen gewijzigd."
 
 #: ../src/ui/dialog/selectorsdialog.cpp:1022
 msgid "CSS selector"
-msgstr "CSS selector"
+msgstr "CSS-selector"
 
 #: ../src/ui/dialog/selectorsdialog.cpp:1025
 msgid "Add"
@@ -32044,7 +32048,7 @@ msgstr "Stokhoogte:"
 #: ../src/ui/dialog/svg-fonts-dialog.cpp:848
 msgid ""
 "Amount of space taken up by ascenders like the tall line on the letter 'h'"
-msgstr "Ruimte ingenomen door stokletters zoals de hoge lijn bij de letter 'h'."
+msgstr "Ruimte ingenomen door stokletters zoals de hoge lijn bij de letter 'h'"
 
 #: ../src/ui/dialog/svg-fonts-dialog.cpp:849
 msgid "Caps height:"
@@ -32071,7 +32075,7 @@ msgstr "Staartlengte:"
 
 #: ../src/ui/dialog/svg-fonts-dialog.cpp:851
 msgid "Amount of space taken up by descenders like the tail on the letter 'g'"
-msgstr "Ruimte ingenomen door staartletters zoals de staart bij de letter 'g'."
+msgstr "Ruimte ingenomen door staartletters zoals de staart bij de letter 'g'"
 
 #: ../src/ui/dialog/svg-fonts-dialog.cpp:885
 msgid "Set up canvas"
@@ -35140,7 +35144,7 @@ msgstr ""
 #: ../src/ui/tools/node-tool.cpp:668
 msgctxt "Node tool tip"
 msgid "<b>Shift</b>: drag to add nodes to the selection"
-msgstr "<b>Shift</b>: drag to add nodes to the selection"
+msgstr "<b>Shift</b>: Slepen om knooppunten aan de selectie toe te voegen"
 
 #: ../src/ui/tools/node-tool.cpp:686
 msgid "<b>%1 of %2</b> node selected."
@@ -36407,7 +36411,7 @@ msgstr "Unicase"
 #: ../src/ui/widget/font-variants.cpp:176
 msgctxt "Font feature"
 msgid "Titling"
-msgstr "Titling"
+msgstr "Titelschrift"
 
 #: ../src/ui/widget/font-variants.cpp:178
 msgctxt "Font feature"
@@ -36580,8 +36584,7 @@ msgstr "Kleine hoofdletters (voor onderkast). OpenType: 'pcap'"
 msgid ""
 "All petite-caps (uppercase and lowercase). OpenType tables: 'c2sc' and 'pcap'"
 msgstr ""
-"Alles kleine hoofdletters (hoofdletters en onderkast). OpenType: 'c2sc' and "
-"'pcap'"
+"Alles kleinkapitaal (hoofdletters en onderkast). OpenType: 'c2sc' and 'pcap'"
 
 #: ../src/ui/widget/font-variants.cpp:318
 msgid ""
@@ -38331,7 +38334,7 @@ msgstr "kolom"
 #: ../share/ui/dialog-extensions.glade:244
 msgctxt "run-extension"
 msgid "_Run"
-msgstr "_Run"
+msgstr "_Uitvoeren"
 
 #: ../share/ui/dialog-filter-editor.glade:49
 #: ../share/ui/dialog-filter-editor.glade:290
@@ -39187,7 +39190,7 @@ msgstr "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #: ../share/ui/font-list.glade:184
 msgctxt "font-sample-text"
 msgid "The quick brown fox jumps over the lazy dog."
-msgstr "The quick brown fox jumps over the lazy dog."
+msgstr "Pa's wijze lynx bezag vroom het fikse aquaduct."
 
 #. Sample text using diacritical marks and special characters. Add diacritics if your alphabet supports them, or other character variants that may be of interest to speakers of your language, like currency sign, etc. The idea is to test if selected font defines those variants.
 #: ../share/ui/font-list.glade:192
@@ -40993,8 +40996,8 @@ msgid ""
 "The angle of the pen's nib (in degrees; 0 = horizontal; has no effect if "
 "fixation = 0)"
 msgstr ""
-"De hoek van de punt van de pen (in graden; 0 = horizontaal. Heeft geen invloed "
-"als de fixatie 0 is)."
+"De hoek van de punt van de pen (in graden; 0 = horizontaal; heeft geen "
+"invloed bij fixatie = 0)"
 
 #: ../share/ui/toolbar-calligraphy.ui:295 ../share/ui/toolbar-calligraphy.ui:341
 #: ../share/ui/toolbar-calligraphy.ui:400 ../share/ui/toolbar-calligraphy.ui:435
@@ -42591,7 +42594,9 @@ msgstr ""
 # File: ../share/extensions/inkex/deprecated.py, line: 162
 #: ../share/extensions/inkex/deprecated/deprecatedeffect.py:179
 msgid "{} is no longer in use. Use the lxml `.getparent()` method instead."
-msgstr "{} is no longer in use. Use the lxml `.getparent()` method instead."
+msgstr ""
+"{} is niet meer in gebruik. Gebruik in plaats daarvan de lxml-methode "
+"`.getparent()`."
 
 #
 # File: ../share/extensions/inkex/deprecated.py, line: 152
@@ -42642,8 +42647,8 @@ msgid ""
 "{} is now a property of the SvgDocumentElement class. Use `self.svg.width` "
 "instead."
 msgstr ""
-"{} is nu een methode in de klasse SvgDocumentElement.  Gebruik in de plaats "
-"`self.svg.width`."
+"{} is nu een methode in de klasse SvgDocumentElement. Gebruik in plaats "
+"daarvan `self.svg.width`."
 
 #: ../share/extensions/inkex/deprecated/deprecatedeffect.py:256
 msgid ""
@@ -42872,7 +42877,7 @@ msgstr "Geef aub. een laagnaam op."
 
 #: ../share/extensions/jessyink_transitions.py:49
 msgid "Layer '{}' not found."
-msgstr "Laag  '{}' niet aangetroffen."
+msgstr "Laag '{}' niet aangetroffen."
 
 #: ../share/extensions/jessyink_video.py:40
 msgid "Could not obtain the selected layer for inclusion of the video element."
@@ -43176,7 +43181,9 @@ msgstr "Kan symbool {} niet vinden"
 msgid ""
 "Couldn't find anything using that font, please ensure the spelling and spacing "
 "is correct."
-msgstr "Er is niets dat dat lettertype gebruikt. Kijk de spelling en spaties na."
+msgstr ""
+"Kon niets vinden met dat lettertype, zorg er dan voor dat de spelling en "
+"spatiëring correct zijn."
 
 #: ../share/extensions/replace_font.py:177
 msgid "There was nothing selected"
@@ -44463,7 +44470,7 @@ msgstr "Vulkleur:"
 
 #: ../share/extensions/frame.inx:29
 msgid "Stroke width (user units)"
-msgstr "Streekdikte (gebruikerseenheid):"
+msgstr "Streekdikte (gebruikerseenheid)"
 
 #: ../share/extensions/frame.inx:30
 msgid "Stacking order"
@@ -45139,8 +45146,8 @@ msgid ""
 "  "
 msgstr ""
 "\n"
-"Hershey Text Hulpmiddelen Functies\n"
-"   "
+"Hershey Text Hulpfuncties\n"
+"  "
 
 #: ../share/extensions/hershey.inx:66
 #: ../share/extensions/other/gcodetools/gcodetools_area.inx:32
@@ -45220,7 +45227,7 @@ msgstr ""
 "Voor uitgebreide hulp, klik \"Toepassen\" terwijl dit tabblad geselecteerd "
 "is.\n"
 "\n"
-"   "
+"  "
 
 #: ../share/extensions/hershey.inx:104
 msgid "Credits"
@@ -45381,7 +45388,7 @@ msgstr ""
 
 #: ../share/extensions/hpgl_output.inx:14 ../share/extensions/plotter.inx:70
 msgid "Pen speed (cm/s or mm/s):"
-msgstr "Snelheid pen (cm/s of mm/s)"
+msgstr "Pensnelheid (cm/s of mm/s):"
 
 #: ../share/extensions/hpgl_output.inx:14
 msgid ""
@@ -46552,11 +46559,12 @@ msgstr ""
 "    * Paginamarges: extra ruimte rond elke pagina.\n"
 "    * Lay-out rijen en kolommen.\n"
 "    * Lay-out afmetingen: breedte en hoogte, automatisch bepaald indien bij "
-"bij één 0 is ingevuld.\n"
+"één 0 is ingevuld.\n"
 "    * Automatisch bepalen van afmetingen lay-out: de waarden voor de "
 "afmetingen niet gebruiken.\n"
 "    * Marges lay-out: witruimte rond elk onderdeel van de lay-out.\n"
-"    * Vulling lay-out: vulling binnenzijde voor elk onderdeel van de lay-out.\n"
+"    * Vulling lay-out: vulling binnenzijde voor elk onderdeel van de lay-out."
+"\n"
 "      "
 
 #: ../share/extensions/layout_nup.inx:65
@@ -46807,7 +46815,7 @@ msgstr "Midden"
 
 #: ../share/extensions/measure.inx:28
 msgid "Right (End)"
-msgstr "Rechts (einde):"
+msgstr "Rechts (einde)"
 
 #: ../share/extensions/measure.inx:31
 msgid "Fixed Text"
@@ -47279,7 +47287,7 @@ msgstr ""
 #: ../share/extensions/other/gcodetools/gcodetools_prepare_path_for_plasma.inx:53
 #: ../share/extensions/other/gcodetools/gcodetools_tools_library.inx:56
 msgid "Gcodetools"
-msgstr "Gcodetools"
+msgstr "Gcode-hulpmiddelen"
 
 #: ../share/extensions/other/gcodetools/gcodetools_area.inx:4
 #: ../share/extensions/other/gcodetools/gcodetools_area.inx:8
@@ -47311,15 +47319,15 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"\"Oppervlak offset maken\": maakt verschillende Inkscape-offsetpaden aan om de "
-"originele padoppervlakte te vullen tot de \"Contourbreedte\".\n"
+"\"Oppervlak offset maken\": maakt verschillende Inkscape-offsetpaden aan om "
+"de originele padoppervlakte te vullen tot de \"Contourbreedte\".\n"
 "\n"
-"Contouren beginnen bij \"1/2 D\" tot de \"Contourbreedte\" met \"D\" stappen, "
-"waarbij D ontleend wordt aan de gereedschapsdefinitie (\"Diameter "
-"gereedschap\"). \n"
+"Contouren beginnen bij \"1/2 D\" tot de \"Contourbreedte\" met \"D\" "
+"stappen, waarbij D ontleend wordt aan de gereedschapsdefinitie ("
+"\"Diameter gereedschap\"). \n"
 "Slechts één offset wordt gemaakt indien de \"Contourbreedte\" gelijk is aan "
 "\"1/2 D\".\n"
-"             "
+"            "
 
 #: ../share/extensions/other/gcodetools/gcodetools_area.inx:21
 msgid "Fill area"
@@ -49078,7 +49086,7 @@ msgstr "DMPL"
 
 #: ../share/extensions/plotter.inx:58
 msgid "KNK Plotter (HPGL variant)"
-msgstr "KNK Plotter (HPGL variant)"
+msgstr "KNK Plotter (HPGL-variant)"
 
 #: ../share/extensions/plotter.inx:61
 msgid ""
@@ -49141,8 +49149,8 @@ msgid ""
 msgstr ""
 "De snelheid waarmee de pen beweegt in cm/s of mm/s (afhankelijk van je "
 "plottertype). Stel op 0 in om opdracht over te slaan. De meeste plotters "
-"negeren deze opdracht. Dit kan ook in de laagnaam opgegeven worden (vb. 'Pen 3 "
-"Speed 10')"
+"negeren deze opdracht. Dit kan ook in de laagnaam opgegeven worden (vb. 'Pen "
+"3 Speed 10')."
 
 #: ../share/extensions/plotter.inx:71
 msgid "Rotation (°, clockwise):"
@@ -49187,8 +49195,8 @@ msgid ""
 "The distance in mm that will be cut over the starting point of the path to "
 "prevent open paths. Set to 0.0 to omit command (default: 1.00)."
 msgstr ""
-"Afstand in mm die over het beginpunt van het pad wordt gesneden om open paden "
-"te vermijden, stel op 0.0 in om opdracht te negeren (Standaard: 1.00)"
+"Afstand in mm die over het beginpunt van het pad wordt gesneden om open "
+"paden te vermijden. Stel op 0.0 in om opdracht te negeren (Standaard: 1.00)."
 
 #: ../share/extensions/plotter.inx:85
 msgid "Tool (knife) offset correction (mm):"
@@ -49199,8 +49207,8 @@ msgid ""
 "The offset from the tool tip to the tool axis in mm. Set to 0.0 to omit "
 "command (default: 0.25)."
 msgstr ""
-"Afstand tussen gereedschapstip en gereedschapsas in mm, stel op 0.0 in om "
-"opdracht te negeren. (standaard: 0.25)"
+"Afstand in mm tussen tip en as van het gereedschap. Stel op 0.0 in om "
+"opdracht te negeren (standaard: 0.25)."
 
 #: ../share/extensions/plotter.inx:86
 msgid ""
@@ -49216,8 +49224,8 @@ msgid ""
 "Curves are divided into lines. This number controls how fine the curves will "
 "be reproduced, the smaller the finer (default: 1.2)."
 msgstr ""
-"Krommen worden opgedeeld in lijnen. Dit getal bepaalt hoe nauwkeurig de paden "
-"worden gereproduceerd, hoe kleiner, hoe fijner. (standaard: 1.2)"
+"Krommen worden opgedeeld in lijnen. Dit getal bepaalt hoe nauwkeurig de "
+"paden worden gereproduceerd, hoe kleiner, hoe fijner. (standaard: 1.2)."
 
 #: ../share/extensions/plotter.inx:88
 msgid ""
@@ -49708,7 +49716,7 @@ msgstr "Beter"
 
 #: ../share/extensions/raster_output_webp.inx:23
 msgid "Best"
-msgstr "Best"
+msgstr "Beste"
 
 #: ../share/extensions/raster_output_webp.inx:31
 msgid "WebP (*.webp)"
@@ -51484,12 +51492,12 @@ msgid ""
 "more. We also aim to maintain a thriving user and developer community by using "
 "open, community-oriented development."
 msgstr ""
-"Inkscape ondersteunt veel geavanceerde SVG features (markeringen, klonen, alfa "
-"blending, etc.). Veel zorg ging naar het ontwerp van een gestroomlijnde "
-"interface. Het is zeer eenvoudig om knooppunten te bewerken, complexe  "
-"padoperaties uit te voeren, bitmaps over te trekken. We beogen een actieve "
-"gebruikers- en ontwikkelgemeenschap door middel van open, gemeenschapsgerichte "
-"ontwikkeling."
+"Inkscape ondersteunt veel geavanceerde SVG-functies (markeringen, klonen, "
+"alfa blending, etc.). Veel zorg is uitgegaan naar het ontwerp van een "
+"gestroomlijnde interface. Het is zeer eenvoudig om knooppunten te bewerken, "
+"complexe padoperaties uit te voeren, bitmaps over te trekken. We beogen een "
+"actieve gebruikers- en ontwikkelgemeenschap door middel van open, "
+"gemeenschapsgerichte ontwikkeling."
 
 #: ../org.inkscape.Inkscape.appdata.xml.in:43
 msgid "Main application window"
@@ -51747,7 +51755,7 @@ msgstr "Python 3-ondersteuning voor extensies"
 
 #: ../org.inkscape.Inkscape.appdata.xml.in:141
 msgid "Bugfix release"
-msgstr "Bugfix release"
+msgstr "Versie met correcties van fouten"
 
 #: ../org.inkscape.Inkscape.appdata.xml.in:142
 msgid "More python3 compatibility for extensions"
