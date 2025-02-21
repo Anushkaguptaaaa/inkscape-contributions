@@ -58,7 +58,7 @@ msgstr ""
 "Project-Id-Version: inkscape 1.0\n"
 "Report-Msgid-Bugs-To: inkscape-translator@lists.inkscape.org\n"
 "POT-Creation-Date: 2024-09-28 10:42+0000\n"
-"PO-Revision-Date: 2025-02-20 16:06+0000\n"
+"PO-Revision-Date: 2025-02-22 07:06+0000\n"
 "Last-Translator: Stephan Paternotte <stephan@paternottes.net>\n"
 "Language-Team: Dutch <https://translate.inkscape.org/projects/inkscape/1-4-x/"
 "nl/>\n"
@@ -219,7 +219,7 @@ msgstr "Uitsteeksels"
 
 #: ../build/share/filters/filters.svg.h:28
 msgid "Inky splotches underneath the object"
-msgstr "Inktachtige vlekken onder het object"
+msgstr "Inktvlekken onder het object"
 
 #: ../build/share/filters/filters.svg.h:30
 msgid "Fire"
