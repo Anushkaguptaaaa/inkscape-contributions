@@ -31,7 +31,7 @@ variables:
   GIT_DEPTH: "50"
   GIT_SUBMODULE_STRATEGY: recursive
 
-#reusable templates
+#reusable template
 .ccache_init: &ccache_init
   before_script:
     - mkdir -p ccache
