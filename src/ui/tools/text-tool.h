@@ -120,6 +120,8 @@ private:
     void _selectionModified(Selection *selection, unsigned flags);
     bool _styleSet(SPCSSAttr const *css);
     int _styleQueried(SPStyle *style, int property);
+
+    SPCSSAttr *_pending_style = nullptr;
 };
 
 Glib::ustring get_selected_text(TextTool const &tool);
