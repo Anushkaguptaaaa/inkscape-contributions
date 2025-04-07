@@ -12065,8 +12065,8 @@ msgid ""
 "can sometimes cause white gaps along the page margins."
 msgstr ""
 "L'export en PDF arrondit la taille du document au point (pt) supérieur. La "
-"compensation peut étirer légèrement le dessin (jusqu'à 0.35mm). Sans la "
-"compensation, les objets ne sont pas étirer, mais il peut y avoir des marges "
+"compensation peut étirer légèrement le dessin (jusqu'à 0,35mm). Sans la "
+"compensation, les objets ne sont pas étirés, mais il peut y avoir des marges "
 "blanches au bord de la page."
 
 #: ../src/extension/internal/cairo-renderer-pdf-out.cpp:229

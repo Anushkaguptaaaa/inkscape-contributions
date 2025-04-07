@@ -97,7 +97,7 @@ static Shape make_shape(Path &path, int path_id = -1, FillRule fill_rule = fill_
     return result;
 }
 
-constexpr auto RELATIVE_THRESHOLD = 0.1;
+constexpr auto RELATIVE_THRESHOLD = 0.08;
 
 /**
  * Create a path with backdata from a pathvector,

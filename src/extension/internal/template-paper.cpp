@@ -106,7 +106,7 @@ void TemplatePaper::init()
 "<preset name='" N_("Ledger/Tabloid") "' label='11 × 17 in' min='11' max='17' unit='in' visibility='all'/>"
 "<preset name='" N_("US Executive") "' label='7.25 × 10.5 in' min='7.25' max='10.5' unit='in' icon='print_US_portrait' visibility='all'/>"
 "<preset name='" N_("US Legal") "' label='8.5 × 14 in' min='8.5' max='14' unit='in' icon='print_US_portrait' visibility='all'/>"
-"<preset name='" N_("US Letter") "' label='8.5 × 11 mm' min='8.5' max='11' unit='in' visibility='list,search'/>"
+"<preset name='" N_("US Letter") "' label='8.5 × 11 in' min='8.5' max='11' unit='in' visibility='list,search'/>"
 "<preset name='" N_("DL Envelope") "' label='220 × 110 mm' min='110' max='220' orientation='land' icon='envelope_landscape' visibility='all'/>"
 "<preset name='" N_("US #10 Envelope") "' label='9.5 × 4.125 in' min='4.125' max='9.5' unit='in' orientation='land' icon='envelope_landscape' visibility='all'/>"
 "<preset name='" N_("Arch A") "' label='9 × 12 in' min='9' max='12' unit='in' />"

@@ -14,6 +14,7 @@
 #include <string>             // for string
 #include <gdk/gdk.h>          // for GdkModifierType
 #include <glibmm/refptr.h>    // for RefPtr
+#include <glibmm/timer.h>     // for Timer
 #include <glibmm/ustring.h>   // for ustring
 #include <gtk/gtk.h>          // for GtkEventControllerKey
 #include <gtkmm/dialog.h>     // for Dialog
@@ -26,6 +27,7 @@ namespace Gtk {
 class Builder;
 class Button;
 class ComboBox;
+class Label;
 class Notebook;
 class Overlay;
 class TreeView;
@@ -43,10 +45,16 @@ public:
 
     SPDocument* get_document() { return _document; }
 
+    void show_now();
+    void show_welcome();
+
+    static int get_start_mode();
 protected:
     void on_response(int response_id) override;
 
 private:
+    SPDocument* get_template_document();
+
     void notebook_next(Gtk::Widget *button);
     bool on_key_pressed(unsigned keyval, unsigned keycode, Gdk::ModifierType state);
     Gtk::TreeModel::Row active_combo(std::string widget_name);
@@ -55,9 +63,9 @@ private:
     void refresh_keys_warning();
     void enlist_recent_files();
     void enlist_keys();
-    void filter_themes();
+    void filter_themes(Gtk::ComboBox *themes);
     void keyboard_changed();
-    void notebook_switch(Gtk::Widget *tab, unsigned page_num);
+    void banner_switch(unsigned page_num);
 
     void theme_changed();
     void canvas_changed();
@@ -69,16 +77,21 @@ private:
     void on_recent_changed();
     void on_kind_changed(const Glib::ustring& name);
 
-    Glib::RefPtr<Gtk::Builder> builder;
-    Gtk::Notebook &tabs;
-    Gtk::Overlay  &banners;
-    Gtk::ComboBox &themes;
-    Gtk::TreeView &recent_treeview;
-    Gtk::Button   &load_btn;
+    const std::string opt_shown;
+    Glib::Timer _timer;
+
+    Glib::RefPtr<Gtk::Builder> build_splash;
+    Gtk::Overlay &banners;
+    Gtk::Button &close_btn;
+    Gtk::Label &messages;
     Inkscape::UI::Widget::TemplateList templates;
-    Gtk::Notebook& _kinds;
+
+    Glib::RefPtr<Gtk::Builder> build_welcome;
+    Gtk::TreeView *recentfiles = nullptr;
 
     SPDocument* _document = nullptr;
+    bool _welcome = false;
+
     sigc::scoped_connection _tabs_switch_page_conn;
     sigc::scoped_connection _templates_switch_page_conn;
 };

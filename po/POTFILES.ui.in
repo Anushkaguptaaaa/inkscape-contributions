@@ -25,7 +25,8 @@
 ../share/ui/gradient-edit.glade
 ../share/ui/image-properties.glade
 ../share/ui/inkscape-about.glade
-../share/ui/inkscape-start.glade
+../share/ui/inkscape-splash.glade
+../share/ui/inkscape-welcome.glade
 ../share/ui/marker-popup.glade
 ../share/ui/object-attributes.glade
 ../share/ui/page-properties.glade

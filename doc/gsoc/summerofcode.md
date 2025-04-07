@@ -193,6 +193,19 @@ Specifically, the functionality needed is
 -   Stroke to path function.
 -   Line scanning (used for flowing text into a shape).
 
+### Improvements to Fill and Stroke Dialog
+
+-   Difficulty: Medium
+-   Prerequisites: Some knowledge of GTK and CSS.
+
+F&S dialog "bakes in" all object styles into inline style upon editing anything.
+Changing one attribute (say fill) should not impact other attributes (like stroke).
+With this groundwork done we would be better positioned to handle CSS classes.
+Today CSS styles get merged into inline style. F&S should understand that attributes can
+be coming from CSS classes and not override them unless users expressly edit them.
+
+<!--- MK: this dialog should be retired:
+
 ### Improvements to Paint Server Dialog 
 
 -   Estimation of difficulty: Easy to Medium (175h)
@@ -206,7 +219,7 @@ the *fill* or *stroke* of an object. This project would be to expand the
 dialog to cover gradients, meshes, and solid colors as well as make
 other improvements to the dialog. Interaction with the Inkscape\'s *UX*
 team will be required.
-
+--->
 
 ###  Improving UI of Live path effects
 

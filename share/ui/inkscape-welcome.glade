@@ -271,6 +271,7 @@
                     <child>
                       <object class="GtkLabel">
                         <property name="label" translatable="yes">Appearance</property>
+                        <property name="tooltip-text" translatable="yes">Customize the color and style of the UI, including buttons and icons. </property>
                         <property name="xalign">0</property>
                         <attributes>
                           <attribute name="scale" value="1.2"></attribute>
@@ -284,6 +285,7 @@
                     <child>
                       <object class="GtkLabel">
                         <property name="label" translatable="yes">Canvas</property>
+                        <property name="tooltip-text" translatable="yes">Set the color of your page and background to suit your workspace. </property>
                         <property name="xalign">0</property>
                         <attributes>
                           <attribute name="scale" value="1.2"></attribute>
@@ -296,7 +298,8 @@
                     </child>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label" translatable="yes">Keyboard</property>
+                        <property name="label" translatable="yes">Shortcuts</property>
+                        <property name="tooltip-text" translatable="yes">Choose a keyboard and mouse shortcut scheme that matches the software you're used to.</property>
                         <property name="xalign">0</property>
                         <attributes>
                           <attribute name="scale" value="1.2"></attribute>
@@ -310,6 +313,7 @@
                     <child>
                       <object class="GtkComboBox" id="themes">
                         <property name="model">themelist</property>
+                        <property name="tooltip-text" translatable="yes">Customize the color and style of the UI, including buttons and icons. </property>
                         <property name="id-column">0</property>
                         <child>
                           <object class="GtkCellRendererText" id="theme_namerenderer"/>
@@ -327,6 +331,7 @@
                     <child>
                       <object class="GtkComboBox" id="keys">
                         <property name="model">keyslist</property>
+                        <property name="tooltip-text" translatable="yes">Choose a keyboard and mouse shortcut scheme that matches the software you're used to.</property>
                         <property name="active">0</property>
                         <property name="id-column">1</property>
                         <child>
@@ -739,65 +744,6 @@
             <property name="label" translatable="yes">Time to Draw</property>
           </object>
         </property>
-      </object>
-    </child>
-  </object>
-
-  <object class="GtkOverlay" id="banner">
-    <property name="width-request">700</property>
-    <property name="height-request">220</property>
-    <property name="child">
-      <object class="GtkStack" id="banner-stack">
-        <property name="transition-duration">1500</property>
-        <property name="transition-type">crossfade</property>
-        <child>
-          <object class="GtkFixed">
-            <child>
-              <object class="GtkPicture" id="start-welcome">
-                <property name="width-request">700</property>
-                <property name="height-request">220</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkPicture" id="welcome_text">
-                <property name="width-request">700</property>
-                <property name="height-request">220</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkStackPage">
-            <property name="child">
-              <object class="GtkPicture" id="start-support">
-              </object>
-            </property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkStackPage">
-            <property name="child">
-              <object class="GtkPicture" id="start-splash">
-                <property name="width-request">700</property>
-                <property name="height-request">220</property>
-              </object>
-            </property>
-          </object>
-        </child>
-      </object>
-    </property>
-    <child type="overlay">
-      <object class="GtkButton" id="close_window">
-        <property name="focusable">True</property>
-        <property name="halign">end</property>
-        <property name="valign">start</property>
-        <property name="hexpand">True</property>
-        <property name="has-frame">False</property>
-        <child>
-          <object class="GtkImage">
-            <property name="icon-name">window-close</property>
-          </object>
-        </child>
       </object>
     </child>
   </object>

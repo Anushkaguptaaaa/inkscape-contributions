@@ -318,7 +318,7 @@ protected:
     UI::Widget::PrefRadioButton _win_save_geom_off;
     UI::Widget::PrefRadioButton _win_save_geom;
     UI::Widget::PrefRadioButton _win_save_geom_prefs;
-    UI::Widget::PrefCheckButton _win_show_boot;
+    UI::Widget::PrefCombo       _win_start_mode;
     UI::Widget::PrefCheckButton _win_hide_task;
     UI::Widget::PrefCheckButton _win_save_viewport;
     UI::Widget::PrefCheckButton _win_zoom_resize;
