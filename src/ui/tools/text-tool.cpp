@@ -113,7 +113,7 @@ TextTool::TextTool(SPDesktop *desktop)
          * just take in the characters when they're finished being
          * entered.
          */
-        gtk_im_context_set_use_preedit(imc, TRUE);
+        gtk_im_context_set_use_preedit(imc, FALSE);
         gtk_im_context_set_client_widget(imc, canvas->Gtk::Widget::gobj());
 
         // Note: Connecting to property_is_focus().signal_changed() would result in slight regression due to signal emisssion ordering.
@@ -374,13 +374,13 @@ bool TextTool::root_handler(CanvasEvent const &event)
         inspect_event(event,
             [&] (KeyPressEvent const &event) {
                 // Block single-letter tool shortcuts (G, B, T, etc.)
-                if ((event.keyval == GDK_KEY_g ||  // Gradient tool
-                     event.keyval == GDK_KEY_b ||  // Brush tool
-                     event.keyval == GDK_KEY_t) && // Text tool
-                    !(event.modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK))) {
-                    ret = true; // Consume the keypress
-                    return;
-                }
+                if ((event.keyval == GDK_KEY_g || 
+                    event.keyval == GDK_KEY_b ||
+                    event.keyval == GDK_KEY_t) &&
+                   (event.modifiers == GDK_CONTROL_MASK)) {
+                   ret = true;
+                   return;
+               }
             },
             [] (auto) {}  // Empty handler for other events
         );
@@ -397,7 +397,6 @@ bool TextTool::root_handler(CanvasEvent const &event)
     auto prefs = Preferences::get();
     tolerance = prefs->getIntLimited("/options/dragtolerance/value", 0, 0, 100);
 
-    
 
     inspect_event(event,
         [&] (ButtonPressEvent const &event) {
@@ -607,7 +606,7 @@ bool TextTool::root_handler(CanvasEvent const &event)
             ret = true;
         },
         [&] (KeyPressEvent const &event) {
-            g_message("Key press: keyval=%d", event.keyval);
+            
             auto const group0_keyval = get_latin_keyval(event);
 
             if (group0_keyval == GDK_KEY_KP_Add || group0_keyval == GDK_KEY_KP_Subtract) {
