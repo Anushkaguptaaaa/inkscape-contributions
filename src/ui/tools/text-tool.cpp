@@ -370,22 +370,6 @@ void TextTool::_showCurrUnichar()
 bool TextTool::root_handler(CanvasEvent const &event)
 {
     bool ret = false;
-    if (text || nascent_object) {
-        inspect_event(event,
-            [&] (KeyPressEvent const &event) {
-                // Block single-letter tool shortcuts (G, B, T, etc.)
-                if ((event.keyval == GDK_KEY_g || 
-                    event.keyval == GDK_KEY_b ||
-                    event.keyval == GDK_KEY_t) &&
-                   (event.modifiers == GDK_CONTROL_MASK)) {
-                   ret = true;
-                   return;
-               }
-            },
-            [] (auto) {}  // Empty handler for other events
-        );
-        if (ret) return true; // If we intercepted a key, stop further processing
-    }
     if constexpr (DEBUG_EVENTS) {
         dump_event(event, "TextTool::root_handler");
     }
@@ -606,12 +590,22 @@ bool TextTool::root_handler(CanvasEvent const &event)
             ret = true;
         },
         [&] (KeyPressEvent const &event) {
-            
             auto const group0_keyval = get_latin_keyval(event);
 
             if (group0_keyval == GDK_KEY_KP_Add || group0_keyval == GDK_KEY_KP_Subtract) {
                 if (!(event.modifiers & GDK_CONTROL_MASK)) { // mod2 is NumLock; if on, type +/- keys
                     return; // otherwise pass on keypad +/- so they can zoom
+                }
+            }
+            if (text || nascent_object) {
+                // Block tool-switching shortcuts (Ctrl+G for Gradient, Ctrl+T for Text tool etc.)
+                // while editing text to prevent accidental tool changes during typing
+                // Ctrl+B (bold) and Ctrl+I (italic) are intentionally not blocked
+                if ((event.keyval == GDK_KEY_g || 
+                     event.keyval == GDK_KEY_t) &&
+                   (event.modifiers == GDK_CONTROL_MASK)) {
+                   ret = true;
+                   return;
                 }
             }
 
@@ -815,11 +809,8 @@ bool TextTool::root_handler(CanvasEvent const &event)
                                         _pending_style = sp_repr_css_attr_new();
                                     }
                                     const char* current = sp_repr_css_property(_pending_style, "font-style", "normal");
-                                    if (strcmp(current, "italic") != 0) {
-                                        sp_repr_css_set_property(_pending_style, "font-style", "italic");
-                                    } else {
-                                        sp_repr_css_set_property(_pending_style, "font-style", "normal");
-                                    }
+                                    const char* new_style = (strcmp(current, "italic") == 0) ? "normal" : "italic";
+                                    sp_repr_css_set_property(_pending_style, "font-style", new_style);
                                 }
                                 sp_repr_css_attr_unref(css);
                                 DocumentUndo::done(_desktop->getDocument(), _("Make italic"), INKSCAPE_ICON("draw-text"));
