@@ -806,11 +806,8 @@ bool TextTool::root_handler(CanvasEvent const &event)
                                 if (text && text_sel_start != text_sel_end) {
                                     // Apply to selection
                                     auto const style = sp_te_style_at_position(text, std::min(text_sel_start, text_sel_end));
-                                    if (style->font_style.computed != SP_CSS_FONT_STYLE_NORMAL) {
-                                        sp_repr_css_set_property(css, "font-style", "normal");
-                                    } else {
-                                        sp_repr_css_set_property(css, "font-style", "italic");
-                                    }
+                                    auto font_style = style->font_style.computed == SP_CSS_FONT_STYLE_NORMAL ? "normal" : "italic";
+                                    sp_repr_css_set_property(css, "font-style", font_style);
                                     sp_te_apply_style(text, text_sel_start, text_sel_end, css);
                                 } else {
                                     // No selection - update pending style
