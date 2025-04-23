@@ -253,9 +253,7 @@ InkFileExportCmd::do_export(SPDocument* doc, std::string filename_in)
                 copy(exts_for_fn.begin(), exts_for_fn.end(), std::ostream_iterator<std::string>(std::cerr, ", "));
                 std::cerr << "\b\b]" << std::endl;
             } else {
-                std::cerr << "InkFileExportCmd::do_export: Unknown export type '" << type.raw() 
-                          << "'. Valid formats: [";
-
+                std::cerr << "InkFileExportCmd::do_export: Unknown export type: " << type.raw() << ". Allowed values: [";
     filetypes.sort();
     filetypes.unique();
     
