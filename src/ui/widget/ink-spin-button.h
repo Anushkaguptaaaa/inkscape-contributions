@@ -12,6 +12,7 @@ class InkSpinButton : public Gtk::Widget {
 public:
     InkSpinButton();
     InkSpinButton(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
+    explicit InkSpinButton(BaseObjectType* cobject);
 
     ~InkSpinButton() override;
 
@@ -25,9 +26,9 @@ public:
     void set_range(double min, double max);
     // Set the step increment of the spin button
     void set_step(double step_increment);
-    // Set new value
+    // Set new value; it will be rescaled if scaling is set
     void set_value(double new_value);
-    // Get current value
+    // Get current value; it will be rescaled if scaling is set
     double get_value() const;
     // Specify optional suffix to show after the value
     void set_suffix(const std::string& suffix, bool add_half_space = true);
@@ -38,6 +39,7 @@ public:
     // Set to true to hide insignificant zeros after decimal point
     void set_trim_zeros(bool trim);
     // Set scaling factor to multiply all values before presenting them; by default it is 1.0
+    // Example: with a factor of 100 user can edit and see percentages, while read and set values are 0..1 fractions
     void set_scaling_factor(double factor);
     // Which widget to focus if defocusing this spin button;
     // if not set explicitly, next available focusable widget will be used
@@ -121,7 +123,7 @@ private:
     void show_label(bool on = true);
     bool commit_entry();
     void change_value(double inc, Gdk::ModifierType state);
-    std::string format(double value, bool with_prefix_suffix, bool with_markup, bool trim_zeros) const;
+    std::string format(double value, bool with_prefix_suffix, bool with_markup, bool trim_zeros, bool limit_size) const;
     void start_spinning(double steps, Gdk::ModifierType state, Glib::RefPtr<Gtk::GestureClick>& gesture);
     void stop_spinning();
 
@@ -130,10 +132,8 @@ private:
     double _drag_full_travel = 300.0; // dragging sensitivity in pixels
     bool _dragged = false;      // Hack to avoid enabling entry after drag. TODO Probably not needed now.
     double _scroll_counter = 0; // Counter to control incrementing/decrementing rate
-    std::string _suffix;        // suffix to show after the number, if any
-    std::string _prefix;        // prefix to show before the number, if any
     bool _trim_zeros = true;    // hide insignificant zeros in decimal fraction
-    double _scaling_factor = 1.0; // multiplier for value formatting
+    double _fmt_scaling_factor = 1.0; // multiplier for value formatting
     sigc::connection _connection;
     int _button_width = 0;     // width of increment/decrement button
     int _entry_height = 0;      // natural height of Gtk::Entry
@@ -152,7 +152,58 @@ private:
     std::function<double (const Glib::ustring&)> _evaluator; // evaluator callback
 
     // ----------- PROPERTIES ------------
-    int prop_digits = 0;
+    Glib::Property<Glib::RefPtr<Gtk::Adjustment>> _adjust;
+    Glib::Property<int> _digits;
+    Glib::Property<double> _num_value;
+    Glib::Property<double> _min_value;
+    Glib::Property<double> _max_value;
+    Glib::Property<double> _step_value;
+    Glib::Property<double> _scaling_factor;
+    Glib::Property<bool> _has_frame;
+    Glib::Property<bool> _show_arrows;
+    Glib::Property<bool> _enter_exit;
+    Glib::Property<Glib::ustring> _label_text;
+    Glib::Property<Glib::ustring> _prefix;
+    Glib::Property<Glib::ustring> _suffix;
+
+public:
+    Glib::PropertyProxy<int> property_digits() { return _digits.get_proxy(); }
+    Glib::PropertyProxy<double> property_scaling_factor() { return _scaling_factor.get_proxy(); }
+    Glib::PropertyProxy<double> property_min_value() { return _min_value.get_proxy(); }
+    Glib::PropertyProxy<double> property_max_value() { return _max_value.get_proxy(); }
+    Glib::PropertyProxy<double> property_step_value() { return _step_value.get_proxy(); }
+    Glib::PropertyProxy<double> property_value() { return _num_value.get_proxy(); }
+    Glib::PropertyProxy<Glib::ustring> property_label() { return _label_text.get_proxy(); }
+    Glib::PropertyProxy<Glib::ustring> property_prefix() { return _prefix.get_proxy(); }
+    Glib::PropertyProxy<Glib::ustring> property_suffix() { return _suffix.get_proxy(); }
+    Glib::PropertyProxy<bool> property_has_frame() { return _has_frame.get_proxy(); }
+    Glib::PropertyProxy<bool> property_show_arrows() { return _show_arrows.get_proxy(); }
+    Glib::PropertyProxy<bool> property_enter_exit() { return _enter_exit.get_proxy(); }
+
+    // Construct a C++ object from a parent (=base) C class object
+
+    static Glib::ObjectBase* wrap_new(GObject* o) {
+        auto obj = new InkSpinButton(GTK_WIDGET(o));
+
+        //TODO: check if this is needed
+        // // if (gtk_widget_is_toplevel(GTK_WIDGET(o)))
+        //     return obj;
+        // else
+            return Gtk::manage(obj);
+    }
+
+    // Register a "new" type in Glib and bind it to the C++ wrapper function
+    static void register_type() {
+        if (gtype) return;
+
+        InkSpinButton dummy;
+        gtype = G_OBJECT_TYPE(dummy.gobj());
+
+        Glib::wrap_register(gtype, InkSpinButton::wrap_new);
+    }
+private:
+    static GType gtype;
+
 };
 
 } // namespace Inkscape::UI::Widget

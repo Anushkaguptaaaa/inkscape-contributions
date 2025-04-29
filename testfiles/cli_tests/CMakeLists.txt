@@ -29,13 +29,30 @@
 # Other options:
 #   ENVIRONMENT        - Additional environment variables to set while running the test
 function(add_cli_test name)
-    # parse arguments
-    set(oneValueArgs INPUT_FILENAME OUTPUT_FILENAME OUTPUT_PAGE PASS_FOR_OUTPUT FAIL_FOR_OUTPUT REFERENCE_FILENAME
-        FUZZYREF_FILENAME FUZZ_PERCENTAGE RASTER_DPI)
-    set(multiValueArgs PARAMETERS EXPECTED_FILES TEST_SCRIPT ENVIRONMENT)
-    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    # Pack arguments so we can call multiple inner functions
+    cmake_parse_arguments(PARSE_ARGV 0 FWD "" "" "")
+    set(quotedArgs "")
+    foreach(arg IN LISTS FWD_UNPARSED_ARGUMENTS)
+        string(APPEND quotedArgs " [===[${arg}]===]")
+    endforeach()
 
-    set(testname  cli_${name})
+    set(testname cli_${name})
+    cmake_language(EVAL CODE "
+        add_cli_test_run(${testname} ${testname}_build ${quotedArgs})
+        add_cli_test_cmp(${testname} ${testname}_check ${quotedArgs})
+        add_cli_test_cln(${testname} ${testname}_clean ${quotedArgs})
+    ")
+endfunction(add_cli_test)
+
+
+#
+# Just the run component of the above add_cli_test
+#
+function(add_cli_test_run fixture testname)
+    # parse arguments
+    set(oneValueArgs INPUT_FILENAME OUTPUT_FILENAME PASS_FOR_OUTPUT FAIL_FOR_OUTPUT)
+    set(multiValueArgs PARAMETERS ENVIRONMENT EXPECTED_FILES TEST_SCRIPT)
+    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     #disable dithering
     set(ARG_PARAMETERS ${ARG_PARAMETERS}  "--export-png-use-dithering=false")
@@ -63,12 +80,32 @@ function(add_cli_test name)
 
     # add test for main command line
     add_test(NAME ${testname} COMMAND inkscape ${ARG_PARAMETERS})
-    set_tests_properties(${testname} PROPERTIES ENVIRONMENT "${CMAKE_CTEST_ENV}")
+    set_tests_properties(${testname} PROPERTIES
+        FIXTURES_SETUP ${fixture}
+        ENVIRONMENT "${CMAKE_CTEST_ENV}")
     if(DEFINED ARG_PASS_FOR_OUTPUT)
         set_tests_properties(${testname} PROPERTIES PASS_REGULAR_EXPRESSION ${ARG_PASS_FOR_OUTPUT})
     endif()
     if(DEFINED ARG_FAIL_FOR_OUTPUT)
         set_tests_properties(${testname} PROPERTIES FAIL_REGULAR_EXPRESSION ${ARG_FAIL_FOR_OUTPUT})
+    endif()
+
+endfunction(add_cli_test_run)
+
+#
+# Just the comparison component of the above add_cli_test
+#
+function(add_cli_test_cmp fixture testname)
+    # parse arguments
+    set(oneValueArgs OUTPUT_FILENAME OUTPUT_PAGE REFERENCE_FILENAME
+        FUZZYREF_FILENAME FUZZ_PERCENTAGE RASTER_DPI PNG_FILENAME)
+    set(multiValueArgs EXPECTED_FILES TEST_SCRIPT)
+    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if (DEFINED ARG_PNG_FILENAME)
+        set(ARG_PNG "${ARG_PNG_FILENAME}")
+    elseif (DEFINED ARG_OUTPUT_FILENAME)
+        set(ARG_PNG "${ARG_OUTPUT_FILENAME}-output.png")
     endif()
 
     # add test to check output files
@@ -83,12 +120,15 @@ function(add_cli_test name)
             set(ARG_TEST_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_TEST_SCRIPT}")
         endif()
 
-        add_test(NAME ${testname}_check_output
+        add_test(NAME ${testname}
             COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/check_output.sh
                     "${ARG_OUTPUT_FILENAME}" "${ARG_OUTPUT_PAGE}" "${ARG_REFERENCE_FILENAME}"
-                    "${ARG_EXPECTED_FILES}" "${ARG_TEST_SCRIPT}")
-        set_tests_properties(${testname}_check_output PROPERTIES
-            ENVIRONMENT "${CMAKE_CTEST_ENV}" DEPENDS ${testname} SKIP_RETURN_CODE 42)
+                    "${ARG_EXPECTED_FILES}" "${ARG_TEST_SCRIPT}" "${ARG_PNG}")
+        set_tests_properties(${testname} PROPERTIES
+            FIXTURES_REQUIRED ${fixture}
+            ENVIRONMENT "${CMAKE_CTEST_ENV}"
+            SKIP_RETURN_CODE 42
+        )
     endif()
 
     # add a fuzzy test to check the output files
@@ -99,15 +139,40 @@ function(add_cli_test name)
         else()
             set(ARG_FUZZ "0")
         endif()
-        add_test(NAME ${testname}_check_output
+        add_test(NAME ${testname}
             COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/l2compare.sh
-            "${ARG_OUTPUT_FILENAME}" "${ARG_OUTPUT_PAGE}" "${ARG_FUZZYREF_FILENAME}" "${ARG_FUZZ}" "${ARG_RASTER_DPI}")
-        set_tests_properties(${testname}_check_output PROPERTIES
-            ENVIRONMENT "${CMAKE_CTEST_ENV}" DEPENDS ${testname} SKIP_RETURN_CODE 42)
+            "${ARG_OUTPUT_FILENAME}" "${ARG_OUTPUT_PAGE}" "${ARG_FUZZYREF_FILENAME}" "${ARG_FUZZ}" "${ARG_RASTER_DPI}" "${ARG_PNG}"
+        )
+        set_tests_properties(${testname} PROPERTIES
+            FIXTURES_REQUIRED ${fixture}
+            ENVIRONMENT "${CMAKE_CTEST_ENV}"
+            SKIP_RETURN_CODE 42
+        )
     endif()
 
-endfunction(add_cli_test)
+endfunction(add_cli_test_cmp)
 
+#
+# Delete all the generated files
+#
+function(add_cli_test_cln fixture testname)
+    set(oneValueArgs INPUT_FILENAME OUTPUT_FILENAME PASS_FOR_OUTPUT FAIL_FOR_OUTPUT)
+    set(multiValueArgs PARAMETERS ENVIRONMENT EXPECTED_FILES TEST_SCRIPT)
+    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    # Cleanup as a test fixture
+    if(DEFINED ARG_OUTPUT_FILENAME)
+        list(APPEND CREATED_FILES "${ARG_OUTPUT_FILENAME}")
+    endif()
+    if(DEFINED ARG_EXPECTED_FILES)
+        list(APPEND CREATED_FILES ${ARG_EXPECTED_FILES})
+    endif()
+    if(DEFINED CREATED_FILES)
+        add_test("${testname}" rm -f ${CREATED_FILES})
+        set_tests_properties(${testname} PROPERTIES
+            FIXTURES_CLEANUP ${fixture})
+    endif()
+endfunction(add_cli_test_cln)
 
 ##### Tests follow below #####
 
@@ -501,10 +566,10 @@ add_cli_test(export-with-filters-multipage PARAMETERS --export-type=pdf
                                            FUZZYREF_FILENAME export-with-filters-multipage_expected.png
                                            FUZZ_PERCENTAGE 1)
 add_cli_test(export-filtered-clones-mp PARAMETERS --export-type=pdf --export-dpi=600
-                                       RASTER_DPI 600
                                        INPUT_FILENAME  export-filtered-clones-mp.svg
                                        OUTPUT_FILENAME export-filtered-clones-mp.pdf
                                        OUTPUT_PAGE 1
+                                       RASTER_DPI 600
                                        FUZZYREF_FILENAME export-filtered-clones-mp_expected.png
                                        FUZZ_PERCENTAGE 3)
 add_cli_test(export-clone-group-filtered-mp PARAMETERS --export-type=pdf
@@ -672,10 +737,12 @@ add_cli_test(action-convert-dpi-method-none
 add_cli_test(action-convert-dpi-method-scale-viewbox
              PARAMETERS --export-area-page --actions=convert-dpi-method:scale-viewbox$<SEMICOLON>file-open:${CMAKE_CURRENT_SOURCE_DIR}/testcases/shapes_pre_0.92.svg$<SEMICOLON>export-filename:action-convert-dpi-method-scale-viewbox.png$<SEMICOLON>export-do
              OUTPUT_FILENAME action-convert-dpi-method-scale-viewbox.png
+             EXPECTED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/testcases/shapes_pre_0.92_backup.svg"
              REFERENCE_FILENAME shapes_pre_0.92_scaled_expected.png)
 add_cli_test(action-convert-dpi-method-scale-document
              PARAMETERS --export-area-page --actions=convert-dpi-method:scale-document$<SEMICOLON>file-open:${CMAKE_CURRENT_SOURCE_DIR}/testcases/shapes_pre_0.92.svg$<SEMICOLON>export-filename:action-convert-dpi-method-scale-document.png$<SEMICOLON>export-do
              OUTPUT_FILENAME action-convert-dpi-method-scale-document.png
+             EXPECTED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/testcases/shapes_pre_0.92_backup.svg"
              REFERENCE_FILENAME shapes_pre_0.92_scaled_expected.png)
 
 # debug-info
@@ -928,6 +995,7 @@ function(add_pdfinput_test name pages font_strategy)
     add_cli_test(pdfinput-${name}
         INPUT_FILENAME pdfinput/${name}.pdf
         PARAMETERS --pages=${pages} --pdf-font-strategy=${font_strategy} --actions=export-filename:${name}.svg$<SEMICOLON>export-do
+        EXPECTED_FILES "${name}.svg"
         TEST_SCRIPT compare.sh ${name}.svg "${CMAKE_CURRENT_SOURCE_DIR}/testcases/pdfinput/${name}_expected.svg")
 
 endfunction(add_pdfinput_test)

@@ -199,7 +199,7 @@ public:
     int get_sort_priority() const { return _priority; }
     void set_sort_priority(int priority) { _priority = priority; }
 
-    virtual void run_processing_actions(SPDocument *doc);
+    void run_processing_actions(SPDocument *doc);
 
     /* Parameter Stuff */
 private:

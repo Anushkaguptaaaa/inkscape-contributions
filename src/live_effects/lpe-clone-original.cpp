@@ -39,27 +39,24 @@
 namespace Inkscape {
 namespace LivePathEffect {
 
-static Util::EnumData<Clonelpemethod> const ClonelpemethodData[] = {
-    {CLM_NONE, N_("No Shape"), "none"},
-    {CLM_D, N_("With LPE's"), "d"},
-    {CLM_ORIGINALD, N_("Without LPE's"), "originald"},
-    {CLM_BSPLINESPIRO, N_("Spiro or BSpline Only"), "bsplinespiro"},
+static const Util::EnumData<Clonelpemethod> ClonelpemethodData[] = {
+    { CLM_NONE,          N_("Transformation Only"),      "none" },
+    { CLM_D,             N_("Original Shape + LPEs"),   "d" },
+    { CLM_ORIGINALD,     N_("Original Shape Only"),     "originald" },
+    { CLM_BSPLINESPIRO,  N_("Spiro or BSpline Only"),   "bsplinespiro" },
 };
 static const Util::EnumDataConverter<Clonelpemethod> CLMConverter(ClonelpemethodData, CLM_END);
 
 LPECloneOriginal::LPECloneOriginal(LivePathEffectObject *lpeobject)
     : Effect(lpeobject)
-    , linkeditem(_("Linked Item:"), _("Item from which to take the original data"), "linkeditem", &wr, this)
-    , method(_("Shape"), _("Linked shape"), "method", CLMConverter, &wr, this, CLM_D)
-    , attributes(_("Attributes"),
-                 _("Attributes of the original that the clone should copy, written as a comma-separated list; e.g. "
-                   "'transform, style, clip-path, X, Y'."),
+    , linkeditem(_("Linked Object:"), _("Select the object to use as the source for original data."), "linkeditem", &wr, this)
+    , method(_("Shape"), _("Choose how path geometry is synchronized from the original object: Transformations only, original path data, path with Live Path Effects, or Spiro/BSpline shapes only."), "method", CLMConverter, &wr, this, CLM_D)
+    , allow_transforms(_("Allow Transformations"), _("This allows you to change the position, scale, and rotation of the clone."), "allow_transforms", &wr, this, true)
+    , attributes(_("Attributes"), _("Attributes of the original object that the clone should copy, written as a comma-separated list e.g. 'transform, style, clip-path, X, Y'."),
                  "attributes", &wr, this, "")
     , css_properties(_("CSS Properties"),
-                     _("CSS properties of the original that the clone should copy, written as a comma-separated list; "
-                       "e.g. 'fill, filter, opacity'."),
-                     "css_properties", &wr, this, "")
-    , allow_transforms(_("Allow Transforms"), _("Allow transforms"), "allow_transforms", &wr, this, true)
+                       _("Specify which CSS properties the clone should copy from the original object, using a comma-separated list (for example: 'fill, filter, opacity')."),
+                       "css_properties", &wr, this, "")
 {
     //0.92 compatibility
     const gchar *linkedpath = getLPEObj()->getAttribute("linkedpath");
@@ -77,9 +74,9 @@ LPECloneOriginal::LPECloneOriginal(LivePathEffectObject *lpeobject)
     }
     registerParameter(&linkeditem);
     registerParameter(&method);
+    registerParameter(&allow_transforms);
     registerParameter(&attributes);
     registerParameter(&css_properties);
-    registerParameter(&allow_transforms);
     attributes.param_hide_canvas_text();
     css_properties.param_hide_canvas_text();
 }
@@ -139,7 +136,7 @@ LPECloneOriginal::newWidget()
         }
         ++it;
     }
-    auto const sync_button = Gtk::make_managed<Gtk::Button>(Glib::ustring(_("No Shape Sync to Current")));
+    auto const sync_button = Gtk::make_managed<Gtk::Button>(Glib::ustring(_("Unlink Shape - Transformation Only")));
     sync_button->signal_clicked().connect(sigc::mem_fun (*this,&LPECloneOriginal::syncOriginal));
     UI::pack_start(*vbox, *sync_button, true, true, 2);
     return vbox;

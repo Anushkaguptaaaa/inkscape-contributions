@@ -115,11 +115,16 @@ parts:
       - -usr/lib/*/libLerc.*
       - -usr/lib/*/libSM.*
       - -usr/lib/*/libXcursor.*
+      - -usr/lib/*/libXcomposite.*
       - -usr/lib/*/libXi.*
       - -usr/lib/*/libXinerama.*
       - -usr/lib/*/libXrandr.*
       - -usr/lib/*/libXrender.*
       - -usr/lib/*/libXt.*
+      - -usr/lib/*/libarchive.*
+      - -usr/lib/*/libatk.*
+      - -usr/lib/*/libatk-bridge.*
+      - -usr/lib/*/libatspi.*
       - -usr/lib/*/libaom.*
       - -usr/lib/*/libaspell.*
       - -usr/lib/*/libavahi-client.*
@@ -196,6 +201,48 @@ parts:
       - -usr/lib/*/libwebpmux.*
       - -usr/lib/*/libxcb-render.*
       - -usr/lib/*/libxslt.*
+      - -usr/lib/*/libcdda_interface*
+      - -usr/lib/*/libcdda_paranoia.*
+      - -usr/lib/*/libdw.*
+      - -usr/lib/*/libgdk-3.*
+      - -usr/lib/*/libgio-2.0.*
+      - -usr/lib/*/libglib-2.0.*
+      - -usr/lib/*/libgmodule-2.0.*
+      - -usr/lib/*/libgnome-desktop-3.so.*
+      - -usr/lib/*/libgobject-2.0.*
+      - -usr/lib/*/libgspell-1.*
+      - -usr/lib/*/libgstallocators-1.0.*
+      - -usr/lib/*/libgstapp-1.0.*
+      - -usr/lib/*/libgstaudio-1.0.*
+      - -usr/lib/*/libgstbase-1.0.*
+      - -usr/lib/*/libgstcheck-1.0.*
+      - -usr/lib/*/libgstcontroller-1.0.*
+      - -usr/lib/*/libgstfft-1.0.*
+      - -usr/lib/*/libgstnet-1.0.*
+      - -usr/lib/*/libgstpbutils-1.0.*
+      - -usr/lib/*/libgstreamer-1.0.*
+      - -usr/lib/*/libgstriff-1.0.*
+      - -usr/lib/*/libgstrtp-1.0.*
+      - -usr/lib/*/libgstrtsp-1.0.*
+      - -usr/lib/*/libgstsdp-1.0.*
+      - -usr/lib/*/libgsttag-1.0.*
+      - -usr/lib/*/libgstvideo-1.0.*
+      - -usr/lib/*/libgthread-2.0.*
+      - -usr/lib/*/libgtk-3.*
+      - -usr/lib/*/libhandy-1.*
+      - -usr/lib/*/libogg.*
+      - -usr/lib/*/libopus.*
+      - -usr/lib/*/liborc-0.4.*
+      - -usr/lib/*/liborc-test-0.4.*
+      - -usr/lib/*/libsecret-1.*
+      - -usr/lib/*/libtheora.*
+      - -usr/lib/*/libtheoradec.so.*
+      - -usr/lib/*/libtheoraenc.so.*
+      - -usr/lib/*/libunwind-*.so.*
+      - -usr/lib/*/libunwind.so.8.0.1
+      - -usr/lib/*/libvisual-0.4.*
+      - -usr/lib/*/libvorbis.*
+      - -usr/lib/*/libvorbisenc.so.*
     override-build: |
       sed -i.bak -e 's|Icon=${INKSCAPE_ICONPATH}|Icon=${SNAP}/share/inkscape/branding/inkscape.svg|g' $SNAPCRAFT_PART_SRC/org.inkscape.Inkscape.desktop.template
       craftctl default

@@ -238,7 +238,13 @@ void Effect::effect(SPDesktop *desktop, SPDocument *document)
     if (!loaded()) return;
     ExecutionEnv executionEnv(this, desktop, nullptr, _workingDialog, true);
     if (document)
-        executionEnv.set_document(document);
+        executionEnv.document = document;
+
+    if (auto evdoc = executionEnv.document) {
+        // This may mutate the document before the execution of the effect
+        run_processing_actions(evdoc);
+    }
+
     timer->lock();
     try {
         executionEnv.run();

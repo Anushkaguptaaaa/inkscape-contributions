@@ -328,7 +328,7 @@ void inspect_event(E &&event, Fs... funcs)
  */
 
 /// All modifiers used by Inkscape.
-inline constexpr auto INK_GDK_MODIFIER_MASK = GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_CONTROL_MASK;
+inline constexpr auto INK_GDK_MODIFIER_MASK = GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_ALT_MASK;
 
 inline bool mod_shift(unsigned modifiers) { return modifiers & GDK_SHIFT_MASK; }
 inline bool mod_ctrl(unsigned modifiers) { return modifiers & GDK_CONTROL_MASK; }

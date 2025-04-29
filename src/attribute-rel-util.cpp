@@ -161,8 +161,8 @@ void sp_attribute_clean_style(Node *repr, unsigned int flags)
  */
 Glib::ustring sp_attribute_clean_style(Node *repr, gchar const *string, unsigned int flags)
 {
-    g_return_val_if_fail(repr != nullptr, NULL);
-    g_return_val_if_fail(repr->type() == Inkscape::XML::NodeType::ELEMENT_NODE, NULL);
+    g_return_val_if_fail(repr != nullptr, "");
+    g_return_val_if_fail(repr->type() == Inkscape::XML::NodeType::ELEMENT_NODE, "");
 
     SPCSSAttr *css = sp_repr_css_attr_new();
     sp_repr_css_attr_add_from_string(css, string);

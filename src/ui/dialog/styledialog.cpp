@@ -274,45 +274,6 @@ void StyleDialog::_vscroll()
     }
 }
 
-Glib::ustring StyleDialog::fixCSSSelectors(Glib::ustring selector)
-{
-    g_debug("SelectorsDialog::fixCSSSelectors");
-    Util::trim(selector);
-    std::vector<Glib::ustring> tokens = Glib::Regex::split_simple("[,]+", selector);
-    CRSelector *cr_selector = cr_selector_parse_from_buf((guchar const *)selector.c_str(), CR_UTF_8);
-    for (auto &token : tokens) {
-        Util::trim(token);
-        std::vector<Glib::ustring> subtokens = Glib::Regex::split_simple("[ ]+", token);
-        for (auto &subtoken : subtokens) {
-            Util::trim(subtoken);
-            CRSelector *cr_selector = cr_selector_parse_from_buf((guchar const *)subtoken.c_str(), CR_UTF_8);
-            gchar *selectorchar = reinterpret_cast<gchar *>(cr_selector_to_string(cr_selector));
-            if (selectorchar) {
-                Glib::ustring tag(selectorchar);
-                g_free(selectorchar);
-                if (tag.size() > 1 && tag[0] != '.' && tag[0] != '#') {
-                    auto const i = std::min(tag.find("#"), tag.find("."));
-                    if (i != std::string::npos) {
-                        tag.resize(i);
-                    }
-                    if (!SPAttributeRelSVG::isSVGElement(tag)) {
-                        if (tokens.size() == 1) {
-                            tag.insert(0, 1, '.');
-                            return tag;
-                        } else {
-                            return {};
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if (cr_selector) {
-        return selector;
-    }
-    return {};
-}
-
 void StyleDialog::_reload() { readStyleElement(); }
 
 /**

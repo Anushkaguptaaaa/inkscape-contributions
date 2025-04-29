@@ -146,6 +146,8 @@ ColorPageChannel::ColorPageChannel(
     _adj->set_page_size(0.0);
 
     _spin.set_has_frame(false);
+    _spin.set_digits(0);
+    _spin.set_adjustment(_adj);
 
     _color_changed = _color->signal_changed.connect([this]() {
         if (_color->isValid(_slider._component)) {

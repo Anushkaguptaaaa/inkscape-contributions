@@ -30,6 +30,7 @@
 #include <utility>
 
 #include "attribute-rel-svg.h"
+#include "css/syntactic-decomposition.h"
 #include "desktop.h"
 #include "document-undo.h"
 #include "document.h"
@@ -37,10 +38,8 @@
 #include "preferences.h"
 #include "selection.h"
 #include "style.h"
-#include "ui/controller.h"
 #include "ui/dialog-run.h"
 #include "ui/dialog/styledialog.h"
-#include "ui/icon-loader.h"
 #include "ui/icon-names.h"
 #include "ui/pack.h"
 #include "ui/widget/iconrenderer.h"
@@ -124,6 +123,26 @@ public:
 
     SelectorsDialog *_selectorsdialog;
 };
+
+namespace {
+
+/// Extract a label from a CSS syntactic element, in order to have something to show in the UI.
+auto extract_label(CSS::RuleStatement const &rule)
+{
+    return rule.selectors;
+}
+auto extract_label(CSS::BlockAtStatement const &block_at)
+{
+    return block_at.at_statement;
+}
+auto extract_label(CSS::OtherStatement const &other)
+{
+    return other;
+}
+
+constexpr int FONT_WEIGHT_NORMAL = 400;
+constexpr int FONT_WEIGHT_BOLD = 700;
+} // namespace
 
 void SelectorsDialog::_nodeAdded(Inkscape::XML::Node &node)
 {
@@ -259,7 +278,7 @@ SelectorsDialog::SelectorsDialog()
     col = _treeView.get_column(addCol);
     if (col) {
         col->add_attribute(label->property_text(), _mColumns._colSelector);
-        col->add_attribute(label->property_weight(), _mColumns._colSelected);
+        col->add_attribute(label->property_weight(), _mColumns._fontWeight);
     }
     _treeView.set_expander_column(*(_treeView.get_column(1)));
 
@@ -386,7 +405,92 @@ Inkscape::XML::Node *SelectorsDialog::_getStyleTextNode(bool create_if_missing)
 }
 
 /**
- * Fill the Gtk::TreeStore from the svg:style element.
+ * Populate a tree row with a representation of a CSS rule statement.
+ * Reminder: a rule statement is something like
+ *
+ * .selector1, #selector2 { fill: red; stroke-width: 2pt; }
+ *
+ * @param rule    The rule statement
+ * @param expand  Whether the tree row should be expanded
+ * @param where   Iterator to the tree row to populate
+ */
+void SelectorsDialog::_insertSyntacticElement(CSS::RuleStatement const &rule, bool expand,
+                                              Gtk::TreeIter<Gtk::TreeRow> where)
+{
+    auto row = *where;
+    row[_mColumns._colSelector] = rule.selectors;
+    row[_mColumns._colExpand] = expand;
+    row[_mColumns._colType] = SELECTOR;
+    row[_mColumns._colObj] = nullptr;
+    row[_mColumns._colProperties] = rule.rules;
+    row[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
+
+    // Add objects that match the selector as children
+    for (auto const &obj : _getObjVec(rule.selectors)) {
+        auto const id = obj->getId();
+        if (!id) {
+            continue;
+        }
+        auto childrow = *_store->append(row.children());
+        childrow[_mColumns._colSelector] = "#" + Glib::ustring(id);
+        childrow[_mColumns._colExpand] = false;
+        childrow[_mColumns._colType] = OBJECT;
+        childrow[_mColumns._colObj] = obj;
+        childrow[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
+    }
+}
+
+/**
+ * Populate a tree row with a representation of a CSS block @-statement.
+ * Reminder: a block @-statement is something like
+ *
+ * @media print {
+ *    rect { fill: none; }
+ *    ...
+ * }
+ * In particular, the block may contain further nested blocks.
+ *
+ * @param block_at  The block @-statement
+ * @param expand    Whether the tree row should be expanded
+ * @param where     Iterator to the tree row to populate
+ */
+void SelectorsDialog::_insertSyntacticElement(CSS::BlockAtStatement const &block_at, bool expand,
+                                              Gtk::TreeIter<Gtk::TreeRow> where)
+{
+    auto row = *where;
+    row[_mColumns._colSelector] = block_at.at_statement;
+    row[_mColumns._colExpand] = expand;
+    row[_mColumns._colType] = OTHER;
+    row[_mColumns._colObj] = nullptr;
+    row[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
+
+    if (block_at.block_content) {
+        block_at.block_content->for_each([this, expand, subtree = row.children()](auto const &element) {
+            _insertSyntacticElement(element, expand, _store->append(subtree));
+        });
+    }
+}
+
+/**
+ * Populate a tree row with a representation of a generic ("other") CSS statement.
+ * This function is used for statements other than rule set statements or block @-statements,
+ * for example for an @charset statement.
+ *
+ * @param other  The CSS statement
+ * @param where  Iterator to the tree row to populate
+ */
+void SelectorsDialog::_insertSyntacticElement(CSS::OtherStatement const &other, bool, Gtk::TreeIter<Gtk::TreeRow> where)
+{
+    auto row = *where;
+    row[_mColumns._colSelector] = other;
+    row[_mColumns._colExpand] = false;
+    row[_mColumns._colType] = OTHER;
+    row[_mColumns._colObj] = nullptr;
+    row[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
+}
+
+/**
+ * Fill the internal Gtk::TreeStore from the svg:style element.
  */
 void SelectorsDialog::_readStyleElement()
 {
@@ -395,127 +499,39 @@ void SelectorsDialog::_readStyleElement()
     if (_updating) return; // Don't read if we wrote style element.
     _updating = true;
     _scrollock = true;
-    Inkscape::XML::Node *textNode = _getStyleTextNode();
+    auto const *textNode = _getStyleTextNode();
 
     // Get content from style text node.
-    std::string content = (textNode && textNode->content()) ? textNode->content() : "";
+    std::string const content = (textNode && textNode->content()) ? textNode->content() : "";
 
-    // Remove end-of-lines (check it works on Windoze).
-    content.erase(std::remove(content.begin(), content.end(), '\n'), content.end());
-
-    // Remove comments (/* xxx */)
-#if 0
-        while(content.find("/*") != std::string::npos) {
-            size_t start = content.find("/*");
-            content.erase(start, (content.find("*\/", start) - start) +2);
-        }
-#endif
-
-    // Split on curly brackets. Even tokens are selectors, odd are values.
-    std::vector<Glib::ustring> tokens = Glib::Regex::split_simple("[}{]", content.c_str());
-
-    // If text node is empty, return (avoids problem with negative below).
-    if (tokens.size() == 0) {
+    CSS::SyntacticDecomposition const syntactic_decomposition{content};
+    if (syntactic_decomposition.empty()) {
         _store->clear();
         _updating = false;
         return;
     }
 
-    std::map<Glib::ustring, bool> expanderstatus;
-    for (std::size_t i = 0; i < tokens.size() - 1; i += 2) {
-        Glib::ustring selector = tokens[i];
-        Util::trim(selector, ","); // Remove leading/trailing spaces and commas
-        if (std::vector<Glib::ustring> selectordata = Glib::Regex::split_simple(";", selector); !selectordata.empty()) {
-            selector = std::move(selectordata.back());
-        }
+    // Remember the old expanded status before clearing the store
+    std::map<std::string, bool> expanded_status;
 
-        selector = _style_dialog->fixCSSSelectors(selector);
-
-        for (auto const &row : _store->children()) {
-            Glib::ustring selectorold = row[_mColumns._colSelector];
-            if (selectorold == selector) {
-                expanderstatus.emplace(std::move(selectorold), row[_mColumns._colExpand]);
-            }
+    syntactic_decomposition.for_each([&, rows = _store->children(), this](auto const &element) {
+        auto const label = extract_label(element);
+        auto const row_with_matching_label = std::find_if(rows.begin(), rows.end(), [&label, this](auto const &row) {
+            return label == Glib::ustring{row[_mColumns._colSelector]}.raw();
+        });
+        if (row_with_matching_label != rows.end()) {
+            expanded_status.emplace(label, (*row_with_matching_label)[_mColumns._colExpand]);
         }
-    }
+    });
 
     _store->clear();
-    bool rewrite = false;
 
-    for (std::size_t i = 0; i < tokens.size() - 1; i += 2) {
-        Glib::ustring selector = tokens[i];
-        Util::trim(selector, ","); // Remove leading/trailing spaces and commas
-        if (std::vector<Glib::ustring> selectordata = Glib::Regex::split_simple(";", selector); !selectordata.empty()) {
-            for (std::size_t i = 0; i < selectordata.size() - 1; ++i) {
-                auto &&selectoritem = selectordata[i];
-                Gtk::TreeModel::Row row = *(_store->append());
-                row[_mColumns._colSelector] = std::move(selectoritem += ";");
-                row[_mColumns._colExpand] = false;
-                row[_mColumns._colType] = OTHER;
-                row[_mColumns._colObj] = nullptr;
-                row[_mColumns._colProperties] = "";
-                row[_mColumns._colVisible] = true;
-                row[_mColumns._colSelected] = 400;
-            }
-
-            selector = std::move(selectordata.back());
-        }
-
-        auto selector_old = selector;
-        selector = _style_dialog->fixCSSSelectors(selector);
-        if (selector_old != selector) {
-            rewrite = true;
-        }
-
-        if (selector.empty() || selector == "* > .inkscapehacktmp") {
-            continue;
-        }
-
-        coltype colType = SELECTOR;
-
-        Glib::ustring properties;
-        // Check to make sure we do have a value to match selector.
-        if ((i + 1) < tokens.size()) {
-            properties = tokens[i + 1];
-        } else {
-            std::cerr << "SelectorsDialog::_readStyleElement(): Missing values "
-                         "for last selector!"
-                      << std::endl;
-        }
-        Util::trim(properties);
-
-        Gtk::TreeModel::Row row = *(_store->append());
-        row[_mColumns._colSelector] = selector;
-        row[_mColumns._colExpand] = expanderstatus[selector];
-        row[_mColumns._colType] = colType;
-        row[_mColumns._colObj] = nullptr;
-        row[_mColumns._colProperties] = properties;
-        row[_mColumns._colVisible] = true;
-        row[_mColumns._colSelected] = 400;
-
-        // Add as children, objects that match selector.
-        for (auto const &obj : _getObjVec(selector)) {
-            auto const id = obj->getId();
-            if (!id)
-                continue;
-
-            auto childrow = *_store->append(row.children());
-            childrow[_mColumns._colSelector] = "#" + Glib::ustring(id);
-            childrow[_mColumns._colExpand] = false;
-            childrow[_mColumns._colType] = colType == OBJECT;
-            childrow[_mColumns._colObj] = obj;
-            childrow[_mColumns._colProperties] = ""; // Unused
-            childrow[_mColumns._colVisible] = true;  // Unused
-            childrow[_mColumns._colSelected] = 400;
-        }
-    }
+    // Populate the tree store with representations of the CSS syntactic decomposition elements
+    syntactic_decomposition.for_each([&, this](auto const &element) {
+        _insertSyntacticElement(element, expanded_status[extract_label(element)], _store->append());
+    });
 
     _updating = false;
-
-    if (rewrite) {
-        _writeStyleElement();
-    }
-
     _scrollock = false;
     _vadj->set_value(std::min(_scrollpos, _vadj->get_upper()));
 
@@ -534,6 +550,27 @@ void SelectorsDialog::_rowCollapse(const Gtk::TreeModel::iterator &iter, const G
     Gtk::TreeModel::Row row = *iter;
     row[_mColumns._colExpand] = false;
 }
+
+/// Return the representation of the contents of a tree row in the dialog as a CSS string.
+Glib::ustring SelectorsDialog::_formatRowAsCSS(Gtk::TreeConstRow const &row) const
+{
+    if (row[_mColumns._colType] == SELECTOR) {
+        return row[_mColumns._colSelector] + " { " + row[_mColumns._colProperties] + " }\n";
+    } else if (row[_mColumns._colType] == OTHER) {
+        Glib::ustring result = row[_mColumns._colSelector];
+
+        if (!row.children().empty()) {
+            result += " { ";
+            for (auto const &child : row.children()) {
+                result += _formatRowAsCSS(child);
+            }
+            result += " }";
+        }
+        return result + '\n';
+    }
+    return {};
+}
+
 /**
  * Update the content of the style element as selectors (or objects) are added/removed.
  */
@@ -542,50 +579,23 @@ void SelectorsDialog::_writeStyleElement()
     if (_updating) {
         return;
     }
-
-    g_debug("SelectorsDialog::_writeStyleElement");
-
     _scrollock = true;
     _updating = true;
 
-    Glib::ustring styleContent = "";
-
+    Glib::ustring style_content;
     for (auto const &row : _store->children()) {
-        Glib::ustring selector = row[_mColumns._colSelector];
-#if 0
-        Util::trim(selector, ",");
-        row[_mColumns._colSelector] =  selector;
-#endif
-        if (row[_mColumns._colType] == OTHER) {
-            styleContent = selector + styleContent;
-        } else {
-            styleContent = styleContent + selector + " { " + row[_mColumns._colProperties] + " }\n";
-        }
+        style_content += _formatRowAsCSS(row);
     }
 
-    // We could test if styleContent is empty and then delete the style node here but there is no
-    // harm in keeping it around ...
-    Inkscape::XML::Node *textNode = _getStyleTextNode(true);
-    bool empty = false;
-    if (styleContent.empty()) {
-        empty = true;
-        styleContent = "* > .inkscapehacktmp{}";
-    }
-
-    // TODO: Can this be cleaned up? Surely at least some of it is redundant...!
-    textNode->setContent(styleContent.c_str());
-    if (empty) {
-        styleContent = "";
-        textNode->setContent(styleContent.c_str());
-    }
-    textNode->setContent(styleContent.c_str());
-
+    Inkscape::XML::Node *text_node = _getStyleTextNode(true);
+    g_assert(text_node);
+    text_node->setContent(style_content.c_str());
     DocumentUndo::done(SP_ACTIVE_DOCUMENT, _("Edited style element."), INKSCAPE_ICON("dialog-selectors"));
 
     _updating = false;
     _scrollock = false;
     _vadj->set_value(std::min(_scrollpos, _vadj->get_upper()));
-    g_debug("SelectorsDialog::_writeStyleElement(): | %s |", styleContent.c_str());
+    g_debug("SelectorsDialog::_writeStyleElement(): | %s |", style_content.c_str());
 }
 
 Glib::ustring SelectorsDialog::_getSelectorClasses(Glib::ustring selector)
@@ -715,9 +725,7 @@ void SelectorsDialog::_addToSelector(Gtk::TreeModel::Row row)
         childrow[_mColumns._colExpand] = false;
         childrow[_mColumns._colType] = OBJECT;
         childrow[_mColumns._colObj] = obj;
-        childrow[_mColumns._colProperties] = ""; // Unused
-        childrow[_mColumns._colVisible] = true;  // Unused
-        childrow[_mColumns._colSelected] = 400;
+        childrow[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
     }
 
     row[_mColumns._colSelector] = multiselector;
@@ -841,7 +849,7 @@ Glib::ustring SelectorsDialog::_getIdList(std::vector<SPObject *> sel)
  * @return objVec: a vector of pointers to SPObject's the selector matches.
  * Return a vector of all objects that selector matches.
  */
-std::vector<SPObject *> SelectorsDialog::_getObjVec(Glib::ustring selector)
+std::vector<SPObject *> SelectorsDialog::_getObjVec(Glib::ustring const &selector)
 {
     g_debug("SelectorsDialog::_getObjVec: | %s |", selector.c_str());
 
@@ -1011,13 +1019,21 @@ void SelectorsDialog::_addSelector()
             return;
         }
         /**
-         * @brief selectorName
+         * @brief selectorValue
          * This string stores selector name. The text from entrybox is saved as name
          * for selector. If the entrybox is empty, the text (thus selectorName) is
          * set to ".Class1"
          */
-        originalValue = Glib::ustring(textEditPtr->get_text());
-        selectorValue = _style_dialog->fixCSSSelectors(originalValue);
+        originalValue = textEditPtr->get_text();
+        {
+            std::unique_ptr<CRSelector, decltype(&cr_selector_destroy)> selector{
+                cr_selector_parse_from_buf(reinterpret_cast<guchar const *>(originalValue.c_str()), CR_UTF_8),
+                &cr_selector_destroy};
+            if (!selector) {
+                continue; // Try again on parse error
+            }
+            selectorValue = CSS::selector_to_validated_string(*selector);
+        }
         _del.set_visible(true);
         if (originalValue.find("@import ") == std::string::npos && selectorValue.empty()) {
             textLabelPtr->set_visible(true);
@@ -1035,9 +1051,7 @@ void SelectorsDialog::_addSelector()
         row[_mColumns._colExpand] = false;
         row[_mColumns._colType] = OTHER;
         row[_mColumns._colObj] = nullptr;
-        row[_mColumns._colProperties] = "";
-        row[_mColumns._colVisible] = true;
-        row[_mColumns._colSelected] = 400;
+        row[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
     } else {
         auto const tokens = Glib::Regex::split_simple("[,]+", selectorValue);
         for (auto const &obj : objVec) {
@@ -1062,9 +1076,7 @@ void SelectorsDialog::_addSelector()
         row[_mColumns._colType] = SELECTOR;
         row[_mColumns._colSelector] = selectorValue;
         row[_mColumns._colObj] = nullptr;
-        row[_mColumns._colProperties] = "";
-        row[_mColumns._colVisible] = true;
-        row[_mColumns._colSelected] = 400;
+        row[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
 
         for (auto const &obj : _getObjVec(selectorValue)) {
             auto const id = obj->getId();
@@ -1076,9 +1088,7 @@ void SelectorsDialog::_addSelector()
             childrow[_mColumns._colExpand] = false;
             childrow[_mColumns._colType] = OBJECT;
             childrow[_mColumns._colObj] = obj;
-            childrow[_mColumns._colProperties] = ""; // Unused
-            childrow[_mColumns._colVisible] = true;  // Unused
-            childrow[_mColumns._colSelected] = 400;
+            childrow[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
         }
     }
 
@@ -1220,9 +1230,9 @@ void SelectorsDialog::_selectRow()
     }
 
     for (auto &&row : children) {
-        row[_mColumns._colSelected] = 400;
+        row[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
         for (auto &&subrow : row.children()) {
-            subrow[_mColumns._colSelected] = 400;
+            subrow[_mColumns._fontWeight] = FONT_WEIGHT_NORMAL;
         }
     }
 
@@ -1231,18 +1241,21 @@ void SelectorsDialog::_selectRow()
     std::sort(selected_objs.begin(), selected_objs.end());
 
     for (auto &&row : children) {
+        if (row[_mColumns._colType] != SELECTOR) {
+            continue;
+        }
         // Recalculate the selector, in real time.
         auto row_children = _getObjVec(row[_mColumns._colSelector]);
         std::sort(row_children.begin(), row_children.end());
 
         // If all selected objects are in the css-selector, select it.
         if (row_children == selected_objs) {
-            row[_mColumns._colSelected] = 700;
+            row[_mColumns._fontWeight] = FONT_WEIGHT_BOLD;
         }
 
         for (auto &&subrow : row.children()) {
             if (subrow[_mColumns._colObj] && selection->includes(subrow[_mColumns._colObj])) {
-                subrow[_mColumns._colSelected] = 700;
+                subrow[_mColumns._fontWeight] = FONT_WEIGHT_BOLD;
             }
         }
 

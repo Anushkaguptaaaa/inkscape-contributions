@@ -705,6 +705,7 @@ InkscapeApplication::InkscapeApplication()
     gapp->add_main_option_entry(T::OptionType::BOOL,     "query-y",                'Y', N_("Y coordinate of drawing or object (if specified by --query-id)"),          "");
     gapp->add_main_option_entry(T::OptionType::BOOL,     "query-width",            'W', N_("Width of drawing or object (if specified by --query-id)"),                 "");
     gapp->add_main_option_entry(T::OptionType::BOOL,     "query-height",           'H', N_("Height of drawing or object (if specified by --query-id)"),                "");
+    gapp->add_main_option_entry(T::OptionType::BOOL,     "query-pages",            '\0', N_("Number of pages in the opened file."),                                    "");
 
     // Processing
     _start_main_option_section(_("Advanced file processing"));
@@ -1024,7 +1025,7 @@ void InkscapeApplication::on_activate()
         document = document_new();
     }
     if (_start_screen) {
-        _start_screen->close();
+        _start_screen.reset();
     }
 
     if (!document) {
@@ -1059,6 +1060,9 @@ void InkscapeApplication::windowClose(InkscapeWindow *window)
 // type_vec_files == std::vector<Glib::RefPtr<Gio::File> >
 void InkscapeApplication::on_open(Gio::Application::type_vec_files const &files, Glib::ustring const &hint)
 {
+    // on_activate isn't called in this instance
+    _start_screen.reset();
+
     if(_pdf_poppler)
         INKSCAPE.set_pdf_poppler(_pdf_poppler);
     if(!_pages.empty())
@@ -1067,6 +1071,9 @@ void InkscapeApplication::on_open(Gio::Application::type_vec_files const &files,
     INKSCAPE.set_pdf_font_strategy((int)_pdf_font_strategy);
 
     if (files.size() > 1 && !_file_export.export_filename.empty()) {
+        for (auto &file : files) {
+            std::cerr << " * input-filename: '" << file->get_path().c_str() << "'\n";
+        }
         std::cerr << "InkscapeApplication::on_open: "
                      "Can't use '--export-filename' with multiple input files "
                      "(output file would be overwritten for each input file). "
@@ -1486,6 +1493,7 @@ InkscapeApplication::on_handle_local_options(const Glib::RefPtr<Glib::VariantDic
         options->contains("query-y")               ||
         options->contains("query-width")           ||
         options->contains("query-height")          ||
+        options->contains("query-pages")           ||
 
         options->contains("vacuum-defs")           ||
         options->contains("select")                ||
@@ -1616,6 +1624,7 @@ InkscapeApplication::on_handle_local_options(const Glib::RefPtr<Glib::VariantDic
     if (options->contains("query-y"))      _command_line_actions.emplace_back("query-y",     base);
     if (options->contains("query-width"))  _command_line_actions.emplace_back("query-width", base);
     if (options->contains("query-height")) _command_line_actions.emplace_back("query-height",base);
+    if (options->contains("query-pages"))  _command_line_actions.emplace_back("query-pages", base);
 
     // =================== PROCESS =====================
 

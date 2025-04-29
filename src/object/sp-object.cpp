@@ -1235,8 +1235,11 @@ Inkscape::XML::Node* SPObject::write(Inkscape::XML::Document *doc, Inkscape::XML
             // It is useful, though, for debugging Inkscape code.
             Inkscape::Preferences *prefs = Inkscape::Preferences::get();
             if( prefs->getBool("/options/svgoutput/check_on_editing") ) {
-                unsigned int flags = sp_attribute_clean_get_prefs();
-                style_prop = sp_attribute_clean_style(repr, style_prop.c_str(), flags);
+                // Check styles only if it is an element node
+                if (repr->type() == Inkscape::XML::NodeType::ELEMENT_NODE) {
+                    unsigned int flags = sp_attribute_clean_get_prefs();
+                    style_prop = sp_attribute_clean_style(repr, style_prop.c_str(), flags);
+                }
             }
 
             repr->setAttributeOrRemoveIfEmpty("style", style_prop);

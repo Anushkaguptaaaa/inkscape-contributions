@@ -51,7 +51,6 @@ private:
     Glib::RefPtr<Glib::MainLoop> _mainloop;
     /** \brief  The desktop containing the document that we're working on. */
     SPDesktop * _desktop = nullptr;
-    SPDocument *_document = nullptr;
     /** \brief  A document cache if we were passed one. */
     Implementation::ImplementationDocumentCache * _docCache;
 
@@ -82,8 +81,6 @@ public:
                   bool show_errors = true);
     virtual ~ExecutionEnv ();
 
-    void set_document(SPDocument *document) { _document = document; }
-
     /** \brief Starts the execution of the effect
         \return Returns whether the effect was executed to completion */
     void run ();
@@ -100,6 +97,8 @@ public:
     /** \brief Return reference to working dialog (if any) */
     Gtk::Dialog *get_working_dialog () { return _visibleDialog; };
 
+    // Public according to Core Guideline C.131
+    SPDocument *document = nullptr;
 private:
     void runComplete ();
     void createWorkingDialog ();

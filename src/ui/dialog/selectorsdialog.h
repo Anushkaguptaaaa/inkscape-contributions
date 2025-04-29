@@ -28,6 +28,7 @@
 #include <memory>
 #include <vector>
 
+#include "css/syntactic-decomposition.h"
 #include "ui/dialog/dialog-base.h"
 #include "xml/helper-observer.h"
 
@@ -90,16 +91,14 @@ public:
             add(_colType);
             add(_colObj);
             add(_colProperties);
-            add(_colVisible);
-            add(_colSelected);
+            add(_fontWeight);
         }
         Gtk::TreeModelColumn<Glib::ustring> _colSelector;       // Selector or matching object id.
         Gtk::TreeModelColumn<bool> _colExpand;                  // Open/Close store row.
         Gtk::TreeModelColumn<gint> _colType;                    // Selector row or child object row.
         Gtk::TreeModelColumn<SPObject *> _colObj;               // Matching object (if any).
         Gtk::TreeModelColumn<Glib::ustring> _colProperties;     // List of properties.
-        Gtk::TreeModelColumn<bool> _colVisible;                 // Make visible or not.
-        Gtk::TreeModelColumn<gint> _colSelected;                // Make selected.
+        Gtk::TreeModelColumn<gint> _fontWeight;                 // Text label font weight.
     };
     ModelColumns _mColumns;
 
@@ -139,10 +138,19 @@ public:
 
     Gtk::Button _del;
     Gtk::Button _create;
-    // Reading and writing the style element.
+
+    // Reading the style element.
     Inkscape::XML::Node *_getStyleTextNode(bool create_if_missing = false);
     void _readStyleElement();
+
+    // Helper functions for inserting representations of CSS syntactic elements.
+    void _insertSyntacticElement(CSS::RuleStatement const &rule, bool expand, Gtk::TreeIter<Gtk::TreeRow> where);
+    void _insertSyntacticElement(CSS::BlockAtStatement const &block_at, bool expand, Gtk::TreeIter<Gtk::TreeRow> where);
+    void _insertSyntacticElement(CSS::OtherStatement const &other, bool, Gtk::TreeIter<Gtk::TreeRow> where);
+
+    // Writing the style element.
     void _writeStyleElement();
+    Glib::ustring _formatRowAsCSS(Gtk::TreeConstRow const &row) const;
 
     // Update watchers
     std::unique_ptr<Inkscape::XML::NodeObserver> m_nodewatcher;
@@ -153,7 +161,7 @@ public:
     void _addToSelector(Gtk::TreeModel::Row row);
     void _removeFromSelector(Gtk::TreeModel::Row row);
     Glib::ustring _getIdList(std::vector<SPObject *>);
-    std::vector<SPObject *> _getObjVec(Glib::ustring selector);
+    std::vector<SPObject *> _getObjVec(Glib::ustring const &selector);
     void _insertClass(const std::vector<SPObject *>& objVec, const Glib::ustring& className);
     void _insertClass(SPObject *obj, const Glib::ustring &className);
     void _removeClass(const std::vector<SPObject *> &objVec, const Glib::ustring &className, bool all = false);

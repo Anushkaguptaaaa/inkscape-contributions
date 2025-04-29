@@ -47,11 +47,11 @@ ExecutionEnv::ExecutionEnv (Effect * effect, SPDesktop *desktop, Implementation:
     _show_working(show_working)
 {
     if (_desktop) {
-        _document = desktop->doc();
+        document = desktop->doc();
     }
-    if (_document) {
+    if (document) {
         // Temporarily prevent undo in this scope
-        Inkscape::DocumentUndo::ScopedInsensitive pauseUndo(_document);
+        Inkscape::DocumentUndo::ScopedInsensitive pauseUndo(document);
         Inkscape::Selection *selection = desktop->getSelection();
         if (selection) {
             // Make sure all selected objects have an ID attribute
@@ -159,13 +159,13 @@ ExecutionEnv::cancel () {
 
 void
 ExecutionEnv::undo () {
-    DocumentUndo::cancel(_document);
+    DocumentUndo::cancel(document);
     return;
 }
 
 void
 ExecutionEnv::commit () {
-    DocumentUndo::done(_document, _effect->get_name(), "");
+    DocumentUndo::done(document, _effect->get_name(), "");
     Effect::set_last_effect(_effect);
     _effect->get_imp()->commitDocument();
     killDocCache();
@@ -204,7 +204,7 @@ ExecutionEnv::run () {
         selection->setState(*_selectionState);
         _selectionState.reset();
     } else {
-        _effect->get_imp()->effect(_effect, this, _document);
+        _effect->get_imp()->effect(_effect, this, document);
     }
     _state = ExecutionEnv::COMPLETE;
     // _runComplete.signal();

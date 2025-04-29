@@ -170,32 +170,81 @@ void InkSpinButton::construct() {
     // Value (button) NOT USED, Click handled by zero length drag.
     // m_value->signal_clicked().connect(sigc::mem_fun(*this, &SpinButton::on_value_clicked));
 
+    _minus.set_visible();
     auto m = _minus.measure(Gtk::Orientation::HORIZONTAL);
     _button_width = m.sizes.natural;
     m = _entry.measure(Gtk::Orientation::VERTICAL);
     _entry_height = m.sizes.natural;
     _baseline = m.baselines.natural;
 
-    set_has_frame();
+    set_value(_num_value);
+    set_step(_step_value);
+    set_has_frame(_has_frame);
+    set_has_arrows(_show_arrows);
+    set_scaling_factor(_scaling_factor);
     show_arrows(false);
     _entry.hide();
+
+    property_label().signal_changed().connect([this] {
+        set_label(_label_text.get_value().raw());
+    });
+    set_label(_label_text.get_value());
+
+    property_digits().signal_changed().connect([this]{ queue_resize(); update(); });
+    property_has_frame().signal_changed().connect([this]{ set_has_frame(_has_frame); });
+    property_show_arrows().signal_changed().connect([this]{ set_has_arrows(_show_arrows); });
+    property_scaling_factor().signal_changed().connect([this]{ set_scaling_factor(_scaling_factor); });
+    property_step_value().signal_changed().connect([this]{ set_step(_step_value); });
+    property_min_value().signal_changed().connect([this]{ _adjustment->set_lower(_min_value); });
+    property_max_value().signal_changed().connect([this]{ _adjustment->set_upper(_max_value); });
+    property_value().signal_changed().connect([this]{ set_value(_num_value); });
+    property_prefix().signal_changed().connect([this]{ update(); });
+    property_suffix().signal_changed().connect([this]{ update(); });
 
     _connection = _adjustment->signal_value_changed().connect([this](){ update(); });
     update();
 }
 
-InkSpinButton::InkSpinButton()
-    : Glib::ObjectBase("InkSpinButton")
-{
+#define INIT_PROPERTIES \
+    _adjust(*this, "adjustment", Gtk::Adjustment::create(0, 0, 100, 1)), \
+    _digits(*this, "digits", 3), \
+    _num_value(*this, "value", 0.0), \
+    _min_value(*this, "min-value", 0.0), \
+    _max_value(*this, "max-value", 100.0), \
+    _step_value(*this, "step-value", 1.0), \
+    _scaling_factor(*this, "scaling-factor", 1.0), \
+    _has_frame(*this, "has-frame", true), \
+    _show_arrows(*this, "show-arrows", true), \
+    _enter_exit(*this, "enter-exit-editing", false), \
+    _label_text(*this, "label", {}), \
+    _prefix(*this, "prefix", {}), \
+    _suffix(*this, "suffix", {})
+
+
+InkSpinButton::InkSpinButton():
+    Glib::ObjectBase("InkSpinButton"),
+    INIT_PROPERTIES {
+
     construct();
 }
 
-InkSpinButton::InkSpinButton(BaseObjectType *cobject, Glib::RefPtr<Gtk::Builder> const &builder)
-    : Glib::ObjectBase("InkSpinButton")
-    , Gtk::Widget(cobject)
-{
+InkSpinButton::InkSpinButton(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder):
+    Glib::ObjectBase("InkSpinButton"),
+    Gtk::Widget(cobject),
+    INIT_PROPERTIES {
+
     construct();
 }
+
+InkSpinButton::InkSpinButton(BaseObjectType* cobject):
+    Glib::ObjectBase("InkSpinButton"),
+    Gtk::Widget(cobject),
+    INIT_PROPERTIES {
+
+     construct();
+}
+
+#undef INIT_PROPERTIES
 
 InkSpinButton::~InkSpinButton() = default;
 
@@ -207,9 +256,9 @@ void InkSpinButton::measure_vfunc(Gtk::Orientation orientation, int for_size, in
 
     std::string text;
     if (_min_size_pattern.empty()) {
-        auto delta = prop_digits > 0 ? pow(10.0, -prop_digits) : 0;
-        auto low = format(_adjustment->get_lower() + delta, true, false, true);
-        auto high = format(_adjustment->get_upper() - delta, true, false, true);
+        auto delta = _digits.get_value() > 0 ? pow(10.0, -_digits.get_value()) : 0;
+        auto low = format(_adjustment->get_lower() + delta, true, false, true, true);
+        auto high = format(_adjustment->get_upper() - delta, true, false, true, true);
         text = low.size() > high.size() ? low : high;
     }
     else {
@@ -301,12 +350,12 @@ void InkSpinButton::set_adjustment(const Glib::RefPtr<Gtk::Adjustment>& adjustme
 }
 
 void InkSpinButton::set_digits(int digits) {
-    prop_digits = digits;
+    _digits = digits;
     update();
 }
 
 int InkSpinButton::get_digits() const {
-    return prop_digits;
+    return _digits.get_value();
 }
 
 void InkSpinButton::set_range(double min, double max) {
@@ -320,10 +369,10 @@ void InkSpinButton::set_step(double step_increment) {
 
 void InkSpinButton::set_prefix(const std::string& prefix, bool add_space) {
     if (add_space && !prefix.empty()) {
-        _prefix = prefix + " ";
+        _prefix.set_value(prefix + " ");
     }
     else {
-        _prefix = prefix;
+        _prefix.set_value(prefix);
     }
     update();
 }
@@ -331,10 +380,10 @@ void InkSpinButton::set_prefix(const std::string& prefix, bool add_space) {
 void InkSpinButton::set_suffix(const std::string& suffix, bool add_half_space) {
     if (add_half_space && !suffix.empty()) {
         // thin space
-        _suffix = "\u2009" + suffix;
+        _suffix.set_value("\u2009" + suffix);
     }
     else {
-        _suffix = suffix;
+        _suffix.set_value(suffix);
     }
     update();
 }
@@ -357,7 +406,7 @@ void InkSpinButton::set_trim_zeros(bool trim) {
 
 void InkSpinButton::set_scaling_factor(double factor) {
     assert(factor > 0 && factor < 1e9);
-    _scaling_factor = factor;
+    _fmt_scaling_factor = factor;
     queue_resize();
     update();
 }
@@ -369,30 +418,47 @@ static void trim_zeros(std::string& ret) {
     }
 }
 
-std::string InkSpinButton::format(double value, bool with_prefix_suffix, bool with_markup, bool trim_zeros) const
-{
+std::string InkSpinButton::format(double value, bool with_prefix_suffix, bool with_markup, bool trim_zeros, bool limit_size) const {
     std::stringstream ss;
     ss.imbue(std::locale("C"));
-    ss << std::fixed << std::setprecision(prop_digits) << value;
-    auto number = ss.str();
-    if (trim_zeros) {
-        UI::Widget::trim_zeros(number);
+    std::string number;
+    if (value > 1e12 || value < -1e12) {
+        // use scientific notation to limit size of the output number
+        ss << std::scientific << std::setprecision(std::numeric_limits<double>::digits10) << value;
+        number = ss.str();
+    }
+    else {
+        ss << std::fixed << std::setprecision(_digits.get_value()) << value;
+        number = ss.str();
+        if (trim_zeros) {
+            UI::Widget::trim_zeros(number);
+        }
+        if (limit_size) {
+            auto limit = std::numeric_limits<double>::digits10;
+            if (value < 0) limit += 1;
+
+            if (number.size() > limit) {
+                number = number.substr(0, limit);
+            }
+        }
     }
 
-    if (with_prefix_suffix && (!_suffix.empty() || !_prefix.empty())) {
+    auto suffix = _suffix.get_value();
+    auto prefix = _prefix.get_value();
+    if (with_prefix_suffix && (!suffix.empty() || !prefix.empty())) {
         if (with_markup) {
             std::stringstream markup;
-            if (!_prefix.empty()) {
-                markup << "<span alpha='50%'>" << _prefix << "</span>";
+            if (!prefix.empty()) {
+                markup << "<span alpha='50%'>" << Glib::Markup::escape_text(prefix) << "</span>";
             }
             markup << "<span>" << number << "</span>";
-            if (!_suffix.empty()) {
-                markup << "<span alpha='50%'>" << _suffix << "</span>";
+            if (!suffix.empty()) {
+                markup << "<span alpha='50%'>" << Glib::Markup::escape_text(suffix) << "</span>";
             }
             return markup.str();
         }
         else {
-            return _prefix + number + _suffix;
+            return prefix + number + suffix;
         }
     }
 
@@ -403,24 +469,26 @@ void InkSpinButton::update(bool fire_change_notification) {
     if (!_adjustment) return;
 
     auto value = _adjustment->get_value();
-    auto text = format(value, false, false, _trim_zeros);
+    auto text = format(value, false, false, _trim_zeros, false);
     _entry.set_text(text);
-    if (_suffix.empty() && _prefix.empty()) {
+    if (_suffix.get_value().empty() && _prefix.get_value().empty()) {
         _value.set_text(text);
-    } else {
-        _value.set_markup(format(value, true, true, _trim_zeros));
+    }
+    else {
+        _value.set_markup(format(value, true, true, _trim_zeros, false));
     }
 
     _minus.set_sensitive(_adjustment->get_value() > _adjustment->get_lower());
     _plus.set_sensitive(_adjustment->get_value() < _adjustment->get_upper());
 
     if (fire_change_notification) {
-        _signal_value_changed.emit(value / _scaling_factor);
+        _signal_value_changed.emit(value / _fmt_scaling_factor);
     }
 }
 
 void InkSpinButton::set_new_value(double new_value) {
     _adjustment->set_value(new_value);
+    //TODO: reflect new value in _num_value property while avoiding cycle updates
 }
 
 // ---------------- CONTROLLERS -----------------
@@ -534,6 +602,10 @@ void InkSpinButton::show_label(bool on) {
     _label.set_visible(on && _label_width > 0);
 }
 
+static char const *get_text(Gtk::Editable const &editable) {
+    return gtk_editable_get_text(const_cast<GtkEditable *>(editable.gobj())); // C API is const-incorrect
+}
+
 bool InkSpinButton::commit_entry() {
     try {
         double value = 0.0;
@@ -585,27 +657,13 @@ bool InkSpinButton::defocus() {
         if (_defocus_widget) {
             if (_defocus_widget->grab_focus()) return true;
         }
-        if (_entry.child_focus(Gtk::DirectionType::TAB_FORWARD))
+        if (_entry.child_focus(Gtk::DirectionType::TAB_FORWARD)) {
             return true;
-
-        // TODO: not found good way to defocus yet
-        //  for (auto widget = this->get_next_sibling(); widget; widget = widget->get_next_sibling()) {
-        //      if (widget != this && widget->get_can_focus()) {
-        //          if (widget->grab_focus()) return true;
-        //      }
-        //  }
-        //  for (auto widget = this->get_prev_sibling(); widget; widget = widget->get_prev_sibling()) {
-        //      if (widget != this && widget->get_can_focus()) {
-        //          if (widget->grab_focus()) return true;
-        //      }
-        //  }
-        //  if (get_can_focus()) {
-        //      if (grab_focus()) return true;
-        //  }
-        //  auto parent = get_parent();
-        //  if (parent != this && parent->get_can_focus()) {
-        //      if (parent->grab_focus()) return true;
-        //  }
+        }
+        if (auto root = get_root()) {
+            root->unset_focus();
+            return true;
+        }
     }
     return false;
 }
@@ -654,11 +712,11 @@ void InkSpinButton::on_scroll_end() {
 }
 
 void InkSpinButton::set_value(double new_value) {
-    set_new_value(new_value * _scaling_factor);
+    set_new_value(new_value * _fmt_scaling_factor);
 }
 
 double InkSpinButton::get_value() const {
-    return _adjustment->get_value() / _scaling_factor;
+    return _adjustment->get_value() / _fmt_scaling_factor;
 }
 
 void InkSpinButton::change_value(double inc, Gdk::ModifierType state) {
@@ -789,5 +847,7 @@ void InkSpinButton::set_has_arrows(bool enable) {
 void InkSpinButton::set_enter_exit_edit(bool enable) {
     _enter_exit_edit = enable;
 }
+
+GType InkSpinButton::gtype = 0;
 
 } // namespace Inkscape::UI::Widget

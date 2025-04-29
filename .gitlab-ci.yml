@@ -124,32 +124,56 @@ inkscape:macos:
   stage: build
   parallel:
     matrix:
-      - RUNNER: [ "macosarm" ]
+      - ARCHITECTURE: [ "arm64" ]
   rules:
     - *do_not_run_for_schedules
-    # Mac runner is restricted to "inkscape" and "dehesselle" namespaces; only generate pipelines for those
+    # Create macOS jobs only for the "inkscape" namespace as the runner is
+    # restricted to that group. ("dehesselle" namespace has its own runner)
     - if: $CI_PROJECT_NAMESPACE != "inkscape" && $CI_PROJECT_NAMESPACE != "dehesselle"
       when: never
-    # Intel runner
-    - if: $RUNNER == "macosintel"
+    - if: $ARCHITECTURE == "x86_64"
       variables:
         MACOSX_DEPLOYMENT_TARGET: "10.13"
-    # Apple Silicon runner
-    - if: $RUNNER == "macosarm"
+    - if: $ARCHITECTURE == "arm64"
       variables:
         SDKROOT: /opt/sdks/MacOSX11.3.sdk
+  cache:
+    - key: $CI_JOB_NAME_SLUG-$CI_COMMIT_REF_SLUG
+      fallback_keys:
+        - $CI_JOB_NAME_SLUG-master
+      paths:
+        - ccache
   tags:
-    - ${RUNNER}
+    - macos
+    - ${ARCHITECTURE}
   variables:
+    CCACHE_DIR: $CI_PROJECT_DIR/ccache
+    CCACHE_MAXSIZE: "300Mi"
     INK_BUILD: $CI_PIPELINE_IID
     WRK_DIR: /Users/Shared/work
+    # ICM = inkscape ci macos
+    # https://gitlab.com/inkscape/infra/inkscape-ci-macos
+    ICM_VERSION: 1.3
+  before_script:
+    - |
+      git clone https://gitlab.com/inkscape/infra/inkscape-ci-macos icm
+      git -C icm checkout v$ICM_VERSION
+      git -C icm submodule update --init --recursive
+    # persistent runner only: for more robustness in case a previous job failed
+    # - icm/jhb/usr/bin/archive uninstall_dmg
   script:
-    - packaging/macos/build.sh
+    - icm/jhb/usr/bin/archive install_dmg
+    - icm/build_inkscape.sh
+    - icm/jhb/usr/bin/archive uninstall_dmg
+    # Replace the command above with this one to keep the shadow file.
+    #- icm/jhb/usr/bin/archive uninstall_dmg archive
   artifacts:
     expire_in: 1 year
     paths:
       - Inkscape*.dmg
-      - toolset_overlay.tar.xz
+      # This artifact has been disabled for now (see above) until the test job
+      # is reinstated.
+      #- "*.shadow.bz2"
 
 
 .windows:
@@ -233,9 +257,22 @@ test:linux:
   stage: test
   parallel:
     matrix:
-      - RUNNER: [ "macosintel" ]
+      - ARCHITECTURE: [ "arm64" ]
+  needs:
+    - job: inkscape:macos
+      parallel:
+        matrix:
+          - ARCHITECTURE: arm64
   script:
-    - packaging/macos/test.sh
+    - icm/jhb/usr/bin/archive install_dmg
+    - |
+      if ! icm/310-inkscape_test.sh; then
+        tar -C $(icm/jhb/usr/bin/config get INK_BLD_DIR) -cpJf testfiles.tar.xz testfiles Testing
+        icm/jhb/usr/bin/archive uninstall_dmg
+        exit 1
+      else
+        icm/jhb/usr/bin/archive uninstall_dmg
+      fi
   artifacts:
     paths:
       - testfiles.tar.xz

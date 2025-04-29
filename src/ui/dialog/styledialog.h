@@ -83,7 +83,6 @@ public:
     Gtk::TreeViewColumn *_current_value_col;
     Gtk::TreeModel::Path _current_path;
     bool _deletion{false};
-    Glib::ustring fixCSSSelectors(Glib::ustring selector);
     void readStyleElement();
 
   private:

@@ -1,15 +1,21 @@
 #!/bin/bash
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-file1=$1
-file2=$2
+MY_LOCATION=$(dirname "$0")
+source "${MY_LOCATION}/../utils/functions.sh"
 
-test -f "${file1}" || { echo "compare.sh: First file '${file1}' not found."; exit 1; }
-test -f "${file2}" || { echo "compare.sh: Second file '${file2}' not found."; exit 1; }
+OUTPUT_FILENAME=$1
+REFERENCE_FILENAME=$2
 
-sed -i='' "s/LMSans..-......./'Latin Modern Sans'/" ${file1}
+get_outputs
 
-if ! cmp "${file1}" "${file2}"; then
-    echo "compare.sh: Files '${file1}' and '${file2}' are not identical'."
+test -f "${OUTPUT_FILENAME}" || { echo "compare.sh: First file '${OUTPUT_FILENAME}' not found."; exit 1; }
+test -f "${REFERENCE_FILENAME}" || { echo "compare.sh: Second file '${REFERENCE_FILENAME}' not found."; exit 1; }
+
+sed -i "s/LMSans..-......./'Latin Modern Sans'/" ${OUTPUT_FILENAME}
+
+if ! cmp "${OUTPUT_FILENAME}" "${REFERENCE_FILENAME}"; then
+    echo "compare.sh: Files '${OUTPUT_FILENAME}' and '${REFERENCE_FILENAME}' are not identical'."
+    keep_outputs
     exit 1
 fi

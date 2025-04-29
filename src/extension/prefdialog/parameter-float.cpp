@@ -114,8 +114,7 @@ class ParamFloatAdjustment : public Gtk::Adjustment {
     /** The parameter to adjust. */
     ParamFloat *_pref;
     sigc::signal<void ()> *_changeSignal;
-
-public:
+protected:
     /** Make the adjustment using an extension and the string
                 describing the parameter. */
     ParamFloatAdjustment(ParamFloat *param, sigc::signal<void ()> *changeSignal)
@@ -128,6 +127,12 @@ public:
     };
 
     void val_changed ();
+
+public:
+    static Glib::RefPtr<ParamFloatAdjustment> create(ParamFloat* param, sigc::signal<void ()>* changeSignal) {
+        return Glib::make_refptr_for_instance(new ParamFloatAdjustment(param, changeSignal));
+    }
+
 }; /* class ParamFloatAdjustment */
 
 /**
@@ -158,8 +163,7 @@ Gtk::Widget *ParamFloat::get_widget(sigc::signal<void ()> *changeSignal)
 
     auto const hbox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL, GUI_PARAM_WIDGETS_SPACING);
 
-    auto pfa = new ParamFloatAdjustment(this, changeSignal);
-    Glib::RefPtr<Gtk::Adjustment> fadjust(pfa);
+    auto fadjust = ParamFloatAdjustment::create(this, changeSignal);
 
     if (_mode == FULL) {
 

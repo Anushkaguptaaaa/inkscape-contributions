@@ -10,6 +10,38 @@
 # Released under GNU GPL v2+, read the file 'COPYING' for more information.
 #
 
+# Ensure consistancy between comparison functions with the same bash
+# elements.
+#
+get_outputs()
+{
+    PNG_FILENAME="$1"
+    PNG_REFERENCE="${PNG_FILENAME%%.png}-reference.png"
+    PNG_COMPARE="${PNG_FILENAME%%.png}-compare.png"
+    if [[ "${PNG_FILENAME}" = -* ]]; then
+        echo "Error: Test output file '$PNG_FILENAME' starts with dash"
+        exit 1
+    fi
+    if [ ! -d `dirname "${PNG_FILENAME}"` ]; then
+        mkdir -p `dirname "${PNG_FILENAME}"`
+    fi
+    # This is used to keep a copy of the output in case of failure
+    OUTPUT_FAILED="${OUTPUT_FILENAME%%.*}-failed.${OUTPUT_FILENAME##*.}"
+}
+clean_outputs()
+{
+    if [ "${PNG_FILENAME}" ]; then
+        rm -f "${PNG_FILENAME}" "${PNG_REFERENCE}" "${PNG_COMPARE}"
+    fi
+    if [[ -f "${OUTPUT_FAILED}" ]]; then
+        rm -f "${OUTPUT_FAILED}"
+    fi
+}
+keep_outputs()
+{
+    cp "${OUTPUT_FILENAME}" "${OUTPUT_FAILED}"
+}
+
 ensure_command()
 {
     command -v $1 >/dev/null 2>&1 || { echo >&2 "Required command '$1' not found. Aborting."; exit 1; }

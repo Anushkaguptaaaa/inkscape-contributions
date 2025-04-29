@@ -63,6 +63,7 @@ private:
     sigc::scoped_connection _sel_changed;
 
     bool to_commit = false;
+    std::optional<Geom::Point> last_cursor_position;
 };
 
 } // namespace Tools

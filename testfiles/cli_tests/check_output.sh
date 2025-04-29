@@ -1,6 +1,9 @@
 #!/bin/bash
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+MY_LOCATION=$(dirname "$0")
+source "${MY_LOCATION}/../utils/functions.sh"
+
 command -v convert >/dev/null 2>&1 || { echo >&2 "I require ImageMagick's 'convert' but it's not installed.  Aborting."; exit 1; }
 command -v compare >/dev/null 2>&1 || { echo >&2 "I require ImageMagick's 'compare' but it's not installed.  Aborting."; exit 1; }
 
@@ -9,6 +12,8 @@ OUTPUT_PAGE=$2
 REFERENCE_FILENAME=$3
 EXPECTED_FILES=$4
 TEST_SCRIPT=$5
+
+get_outputs "$6"
 
 # check if expected files exist
 for file in ${EXPECTED_FILES}; do
@@ -37,17 +42,17 @@ if [ -n "${REFERENCE_FILENAME}" ]; then
         OUTFILE_SUFFIX="[${OUTPUT_PAGE}] -colorspace RGB"
     fi
 
-    if ! convert ${delegate1}${OUTPUT_FILENAME}${OUTFILE_SUFFIX} ${OUTPUT_FILENAME}.png; then
+    if ! convert ${delegate1}${OUTPUT_FILENAME}${OUTFILE_SUFFIX} ${PNG_FILENAME}; then
         echo "Warning: Failed to convert test file '${OUTPUT_FILENAME}' to PNG format. Skipping comparison test."
         exit 42
     fi
-    if ! convert ${delegate2}${REFERENCE_FILENAME} ${OUTPUT_FILENAME}_reference.png; then
+    if ! convert ${delegate2}${REFERENCE_FILENAME} ${PNG_REFERENCE}; then
         echo "Warning: Failed to convert reference file '${REFERENCE_FILENAME}' to PNG format. Skipping comparison test."
         exit 42
     fi
 
     # compare files
-    if ! compare -metric AE ${OUTPUT_FILENAME}.png ${OUTPUT_FILENAME}_reference.png ${OUTPUT_FILENAME}_compare.png; then
+    if ! compare -metric AE ${PNG_FILENAME} ${PNG_REFERENCE} ${PNG_COMPARE}; then
         echo && echo "Error: Comparison failed."
         exit 1
     fi
@@ -76,11 +81,9 @@ if [ -n "${TEST_SCRIPT}" ]; then
     if ! $interpreter ${script} "${arguments_array[@]}"; then
         echo "Error: Additional test script failed."
         echo "Full call: $interpreter ${script} $(printf "\"%s\" " "${arguments_array[@]}")"
+        keep_outputs
         exit 1
     fi
 fi
 
-# cleanup
-for file in ${OUTPUT_FILENAME}{,.png,_reference.png,_compare.png} ${EXPECTED_FILES}; do
-    rm -f ${file}
-done
+clean_outputs

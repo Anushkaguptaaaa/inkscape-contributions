@@ -24,6 +24,7 @@
 #include "inkscape-version-info.h"// Inkscape version
 #include "inkscape.h"             // Inkscape::Application
 #include "preferences.h"
+#include "page-manager.h"
 #include "path-prefix.h"          // Extension directory
 #include "selection.h"            // Selection
 
@@ -171,6 +172,17 @@ query_all(InkscapeApplication* app)
 }
 
 void
+query_pages(InkscapeApplication *app)
+{
+    if (SPDocument* doc = app->get_active_document()) {
+        auto &pm = doc->getPageManager();
+        show_output(Inkscape::ustring::format_classic(pm.getPageCount()));
+        return;
+    }
+    show_output("query-pages: no document!");
+}
+
+void
 pdf_page(int page)
 {
     INKSCAPE.set_pages(std::to_string(page));
@@ -222,7 +234,8 @@ std::vector<std::vector<Glib::ustring>> raw_data_base = {
     {"app.query-y",               N_("Query Y"),                    SECTION_QUERY,   N_("Query 'y' value(s) of selected objects")            },
     {"app.query-width",           N_("Query Width"),                SECTION_QUERY,   N_("Query 'width' value(s) of object(s)")               },
     {"app.query-height",          N_("Query Height"),               SECTION_QUERY,   N_("Query 'height' value(s) of object(s)")              },
-    {"app.query-all",             N_("Query All"),                  SECTION_QUERY,   N_("Query 'x', 'y', 'width', and 'height'")             }
+    {"app.query-all",             N_("Query All"),                  SECTION_QUERY,   N_("Query 'x', 'y', 'width', and 'height'")             },
+    {"app.query-pages",           N_("Query Pages"),                SECTION_QUERY,   N_("Query number of pages in the document")             }
     // clang-format on
 };
 
@@ -254,6 +267,7 @@ add_actions_base(InkscapeApplication* app)
     gapp->add_action(               "query-width",        sigc::bind(sigc::ptr_fun(&query_width),               app)        );
     gapp->add_action(               "query-height",       sigc::bind(sigc::ptr_fun(&query_height),              app)        );
     gapp->add_action(               "query-all",          sigc::bind(sigc::ptr_fun(&query_all),                 app)        );
+    gapp->add_action(               "query-pages",        sigc::bind(sigc::ptr_fun(&query_pages),               app)        );
     // clang-format on
 
     // Revision string is going to be added to the actions interface so it can be queried for existance by GApplication

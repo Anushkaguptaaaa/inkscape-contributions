@@ -177,6 +177,10 @@ bool InteractiveBooleansTool::root_handler(CanvasEvent const &event)
     set_cursor(add ? "cursor-union.svg" : "cursor-delete.svg");
     update_status();
 
+    if (last_cursor_position) {
+        boolean_builder->highlight(*last_cursor_position, add);
+    } 
+
     return ToolBase::root_handler(event);
 }
 
@@ -222,6 +226,7 @@ bool InteractiveBooleansTool::event_button_press_handler(ButtonPressEvent const 
 
 bool InteractiveBooleansTool::event_motion_handler(MotionEvent const &event)
 {
+    last_cursor_position = event.pos;
     bool add = should_add(event.modifiers);
 
     if (event.modifiers & GDK_BUTTON1_MASK) {
@@ -230,9 +235,9 @@ bool InteractiveBooleansTool::event_motion_handler(MotionEvent const &event)
         } else {
             return boolean_builder->task_select(event.pos, add);
         }
-    } else {
-        return boolean_builder->highlight(event.pos, add);
     }
+
+    return false;
 }
 
 bool InteractiveBooleansTool::event_button_release_handler(ButtonReleaseEvent const &event)

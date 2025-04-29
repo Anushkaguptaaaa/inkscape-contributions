@@ -483,7 +483,7 @@ bool CommandPalette::operate_recent_file(Glib::ustring const &uri, bool const im
 
     // open
     {
-        get_action_ptr_name("app.file-open").first->activate(uri);
+        get_action_ptr_name("app.file-open-window").first->activate(uri);
         if (write_to_history) {
             _history_xml.add_open(uri);
         }

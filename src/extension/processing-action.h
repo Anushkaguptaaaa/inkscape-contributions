@@ -28,6 +28,7 @@ public:
     bool is_enabled();
     void run(SPDocument *doc);
 
+    std::string const &get_action_name() const { return _action_name; }
 private:
     Inkscape::XML::Node * _repr;
     std::string _action_name;

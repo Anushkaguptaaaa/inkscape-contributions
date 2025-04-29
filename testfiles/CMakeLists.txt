@@ -150,7 +150,8 @@ include(${CMAKE_SOURCE_DIR}/CMakeScripts/UnitTest.cmake)
 
 ### Unit tests
 add_unit_test(version-test SOURCES version.cpp)
-add_dependencies(tests version-test)
+add_unit_test(css-syntactic-decomposition-test SOURCES "css/syntactic-decomposition.cpp" EXTRA_LIBS croco_LIB)
+add_dependencies(tests unit_tests)
 
 ### CLI rendering tests and LPE
 add_subdirectory(cli_tests)
