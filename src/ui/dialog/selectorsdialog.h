@@ -16,8 +16,6 @@
 #ifndef SELECTORSDIALOG_H
 #define SELECTORSDIALOG_H
 
-#include <memory>
-#include <vector>
 #include <glibmm/refptr.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
@@ -27,6 +25,8 @@
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treestore.h>
 #include <gtkmm/treeview.h>
+#include <memory>
+#include <vector>
 
 #include "ui/dialog/dialog-base.h"
 #include "xml/helper-observer.h"

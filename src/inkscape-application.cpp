@@ -1617,7 +1617,6 @@ InkscapeApplication::on_handle_local_options(const Glib::RefPtr<Glib::VariantDic
     if (options->contains("query-width"))  _command_line_actions.emplace_back("query-width", base);
     if (options->contains("query-height")) _command_line_actions.emplace_back("query-height",base);
 
-
     // =================== PROCESS =====================
 
     if (options->contains("vacuum-defs"))  _command_line_actions.emplace_back("vacuum-defs", base);

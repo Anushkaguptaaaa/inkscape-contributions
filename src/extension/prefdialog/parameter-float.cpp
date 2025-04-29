@@ -114,6 +114,7 @@ class ParamFloatAdjustment : public Gtk::Adjustment {
     /** The parameter to adjust. */
     ParamFloat *_pref;
     sigc::signal<void ()> *_changeSignal;
+
 public:
     /** Make the adjustment using an extension and the string
                 describing the parameter. */

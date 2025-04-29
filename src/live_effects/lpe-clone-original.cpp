@@ -39,11 +39,11 @@
 namespace Inkscape {
 namespace LivePathEffect {
 
-static const Util::EnumData<Clonelpemethod> ClonelpemethodData[] = {
-    { CLM_NONE, N_("No Shape"), "none" },
-    { CLM_D, N_("With LPE's"), "d" },
-    { CLM_ORIGINALD, N_("Without LPE's"), "originald" },
-    { CLM_BSPLINESPIRO, N_("Spiro or BSpline Only"), "bsplinespiro" },
+static Util::EnumData<Clonelpemethod> const ClonelpemethodData[] = {
+    {CLM_NONE, N_("No Shape"), "none"},
+    {CLM_D, N_("With LPE's"), "d"},
+    {CLM_ORIGINALD, N_("Without LPE's"), "originald"},
+    {CLM_BSPLINESPIRO, N_("Spiro or BSpline Only"), "bsplinespiro"},
 };
 static const Util::EnumDataConverter<Clonelpemethod> CLMConverter(ClonelpemethodData, CLM_END);
 
@@ -51,11 +51,14 @@ LPECloneOriginal::LPECloneOriginal(LivePathEffectObject *lpeobject)
     : Effect(lpeobject)
     , linkeditem(_("Linked Item:"), _("Item from which to take the original data"), "linkeditem", &wr, this)
     , method(_("Shape"), _("Linked shape"), "method", CLMConverter, &wr, this, CLM_D)
-    , attributes(_("Attributes"), _("Attributes of the original that the clone should copy, written as a comma-separated list; e.g. 'transform, style, clip-path, X, Y'."),
+    , attributes(_("Attributes"),
+                 _("Attributes of the original that the clone should copy, written as a comma-separated list; e.g. "
+                   "'transform, style, clip-path, X, Y'."),
                  "attributes", &wr, this, "")
     , css_properties(_("CSS Properties"),
-                       _("CSS properties of the original that the clone should copy, written as a comma-separated list; e.g. 'fill, filter, opacity'."),
-                       "css_properties", &wr, this, "")
+                     _("CSS properties of the original that the clone should copy, written as a comma-separated list; "
+                       "e.g. 'fill, filter, opacity'."),
+                     "css_properties", &wr, this, "")
     , allow_transforms(_("Allow Transforms"), _("Allow transforms"), "allow_transforms", &wr, this, true)
 {
     //0.92 compatibility

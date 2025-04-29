@@ -184,16 +184,16 @@ void InkSpinButton::construct() {
     update();
 }
 
-InkSpinButton::InkSpinButton():
-    Glib::ObjectBase("InkSpinButton") {
-
+InkSpinButton::InkSpinButton()
+    : Glib::ObjectBase("InkSpinButton")
+{
     construct();
 }
 
-InkSpinButton::InkSpinButton(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder):
-    Glib::ObjectBase("InkSpinButton"),
-    Gtk::Widget(cobject) {
-
+InkSpinButton::InkSpinButton(BaseObjectType *cobject, Glib::RefPtr<Gtk::Builder> const &builder)
+    : Glib::ObjectBase("InkSpinButton")
+    , Gtk::Widget(cobject)
+{
     construct();
 }
 
@@ -369,7 +369,8 @@ static void trim_zeros(std::string& ret) {
     }
 }
 
-std::string InkSpinButton::format(double value, bool with_prefix_suffix, bool with_markup, bool trim_zeros) const {
+std::string InkSpinButton::format(double value, bool with_prefix_suffix, bool with_markup, bool trim_zeros) const
+{
     std::stringstream ss;
     ss.imbue(std::locale("C"));
     ss << std::fixed << std::setprecision(prop_digits) << value;
@@ -406,8 +407,7 @@ void InkSpinButton::update(bool fire_change_notification) {
     _entry.set_text(text);
     if (_suffix.empty() && _prefix.empty()) {
         _value.set_text(text);
-    }
-    else {
+    } else {
         _value.set_markup(format(value, true, true, _trim_zeros));
     }
 
@@ -585,26 +585,27 @@ bool InkSpinButton::defocus() {
         if (_defocus_widget) {
             if (_defocus_widget->grab_focus()) return true;
         }
-        if (_entry.child_focus(Gtk::DirectionType::TAB_FORWARD)) return true;
+        if (_entry.child_focus(Gtk::DirectionType::TAB_FORWARD))
+            return true;
 
-        //TODO: not found good way to defocus yet
-        // for (auto widget = this->get_next_sibling(); widget; widget = widget->get_next_sibling()) {
-        //     if (widget != this && widget->get_can_focus()) {
-        //         if (widget->grab_focus()) return true;
-        //     }
-        // }
-        // for (auto widget = this->get_prev_sibling(); widget; widget = widget->get_prev_sibling()) {
-        //     if (widget != this && widget->get_can_focus()) {
-        //         if (widget->grab_focus()) return true;
-        //     }
-        // }
-        // if (get_can_focus()) {
-        //     if (grab_focus()) return true;
-        // }
-        // auto parent = get_parent();
-        // if (parent != this && parent->get_can_focus()) {
-        //     if (parent->grab_focus()) return true;
-        // }
+        // TODO: not found good way to defocus yet
+        //  for (auto widget = this->get_next_sibling(); widget; widget = widget->get_next_sibling()) {
+        //      if (widget != this && widget->get_can_focus()) {
+        //          if (widget->grab_focus()) return true;
+        //      }
+        //  }
+        //  for (auto widget = this->get_prev_sibling(); widget; widget = widget->get_prev_sibling()) {
+        //      if (widget != this && widget->get_can_focus()) {
+        //          if (widget->grab_focus()) return true;
+        //      }
+        //  }
+        //  if (get_can_focus()) {
+        //      if (grab_focus()) return true;
+        //  }
+        //  auto parent = get_parent();
+        //  if (parent != this && parent->get_can_focus()) {
+        //      if (parent->grab_focus()) return true;
+        //  }
     }
     return false;
 }

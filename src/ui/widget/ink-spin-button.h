@@ -130,8 +130,8 @@ private:
     double _drag_full_travel = 300.0; // dragging sensitivity in pixels
     bool _dragged = false;      // Hack to avoid enabling entry after drag. TODO Probably not needed now.
     double _scroll_counter = 0; // Counter to control incrementing/decrementing rate
-    std::string _suffix; // suffix to show after the number, if any
-    std::string _prefix; // prefix to show before the number, if any
+    std::string _suffix;        // suffix to show after the number, if any
+    std::string _prefix;        // prefix to show before the number, if any
     bool _trim_zeros = true;    // hide insignificant zeros in decimal fraction
     double _scaling_factor = 1.0; // multiplier for value formatting
     sigc::connection _connection;

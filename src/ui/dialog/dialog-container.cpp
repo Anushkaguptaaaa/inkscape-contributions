@@ -211,7 +211,8 @@ DialogBase* DialogContainer::find_existing_dialog(const Glib::ustring& dialog_ty
     auto const action_name = "win.dialog-open('" + dialog_type += "')";
     auto const app = InkscapeApplication::instance();
     auto const &accels = app->gtk_app()->get_accels_for_action(action_name);
-    if (accels.empty()) return {};
+    if (accels.empty())
+        return {};
 
     unsigned key{};
     Gdk::ModifierType mods{};

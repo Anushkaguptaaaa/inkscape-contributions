@@ -16,9 +16,6 @@
 #include "selectorsdialog.h"
 
 #include <algorithm>
-#include <map>
-#include <string>
-#include <utility>
 #include <glibmm/i18n.h>
 #include <glibmm/regex.h>
 #include <gtkmm/adjustment.h>
@@ -28,16 +25,18 @@
 #include <gtkmm/label.h>
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/treemodelfilter.h>
+#include <map>
+#include <string>
+#include <utility>
 
 #include "attribute-rel-svg.h"
 #include "desktop.h"
-#include "document.h"
 #include "document-undo.h"
+#include "document.h"
 #include "inkscape.h"
 #include "preferences.h"
 #include "selection.h"
 #include "style.h"
-
 #include "ui/controller.h"
 #include "ui/dialog-run.h"
 #include "ui/dialog/styledialog.h"
@@ -396,7 +395,7 @@ void SelectorsDialog::_readStyleElement()
     if (_updating) return; // Don't read if we wrote style element.
     _updating = true;
     _scrollock = true;
-    Inkscape::XML::Node * textNode = _getStyleTextNode();
+    Inkscape::XML::Node *textNode = _getStyleTextNode();
 
     // Get content from style text node.
     std::string content = (textNode && textNode->content()) ? textNode->content() : "";
@@ -426,9 +425,7 @@ void SelectorsDialog::_readStyleElement()
     for (std::size_t i = 0; i < tokens.size() - 1; i += 2) {
         Glib::ustring selector = tokens[i];
         Util::trim(selector, ","); // Remove leading/trailing spaces and commas
-        if (std::vector<Glib::ustring> selectordata = Glib::Regex::split_simple(";", selector);
-            !selectordata.empty())
-        {
+        if (std::vector<Glib::ustring> selectordata = Glib::Regex::split_simple(";", selector); !selectordata.empty()) {
             selector = std::move(selectordata.back());
         }
 
@@ -448,9 +445,7 @@ void SelectorsDialog::_readStyleElement()
     for (std::size_t i = 0; i < tokens.size() - 1; i += 2) {
         Glib::ustring selector = tokens[i];
         Util::trim(selector, ","); // Remove leading/trailing spaces and commas
-        if (std::vector<Glib::ustring> selectordata = Glib::Regex::split_simple(";", selector);
-            !selectordata.empty())
-        {
+        if (std::vector<Glib::ustring> selectordata = Glib::Regex::split_simple(";", selector); !selectordata.empty()) {
             for (std::size_t i = 0; i < selectordata.size() - 1; ++i) {
                 auto &&selectoritem = selectordata[i];
                 Gtk::TreeModel::Row row = *(_store->append());
@@ -480,8 +475,8 @@ void SelectorsDialog::_readStyleElement()
 
         Glib::ustring properties;
         // Check to make sure we do have a value to match selector.
-        if ((i+1) < tokens.size()) {
-            properties = tokens[i+1];
+        if ((i + 1) < tokens.size()) {
+            properties = tokens[i + 1];
         } else {
             std::cerr << "SelectorsDialog::_readStyleElement(): Missing values "
                          "for last selector!"
@@ -544,7 +539,6 @@ void SelectorsDialog::_rowCollapse(const Gtk::TreeModel::iterator &iter, const G
  */
 void SelectorsDialog::_writeStyleElement()
 {
-
     if (_updating) {
         return;
     }
@@ -556,7 +550,7 @@ void SelectorsDialog::_writeStyleElement()
 
     Glib::ustring styleContent = "";
 
-    for (auto const &row: _store->children()) {
+    for (auto const &row : _store->children()) {
         Glib::ustring selector = row[_mColumns._colSelector];
 #if 0
         Util::trim(selector, ",");
@@ -849,7 +843,6 @@ Glib::ustring SelectorsDialog::_getIdList(std::vector<SPObject *> sel)
  */
 std::vector<SPObject *> SelectorsDialog::_getObjVec(Glib::ustring selector)
 {
-
     g_debug("SelectorsDialog::_getObjVec: | %s |", selector.c_str());
 
     g_assert(selector.find(";") == Glib::ustring::npos);

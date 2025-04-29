@@ -115,13 +115,14 @@ InkFileExportCmd::do_export(SPDocument* doc, std::string filename_in)
     // Get export type(s) from string supplied with --export-type
     if (!export_type.empty()) {
         export_type_list = Glib::Regex::split_simple("[,;]", export_type);
-        for (auto& type : export_type_list) {
+        for (auto &type : export_type_list) {
             // Strip leading dot if present
             if (!type.empty() && type[0] == '.') {
                 type = type.substr(1);
             }
             if (type.raw().find("--export-type-") == 0) {
-                std::cerr << "Warning: Deprecated hyphen syntax detected. Use --export-type=FORMAT instead." << std::endl;
+                std::cerr << "Warning: Deprecated hyphen syntax detected. Use --export-type=FORMAT instead."
+                          << std::endl;
                 // Auto-correct by removing the "--export-type-" prefix
                 type = type.raw().substr(14);
             }
@@ -254,22 +255,22 @@ InkFileExportCmd::do_export(SPDocument* doc, std::string filename_in)
                 std::cerr << "\b\b]" << std::endl;
             } else {
                 std::cerr << "InkFileExportCmd::do_export: Unknown export type: " << type.raw() << ". Allowed values: [";
-    filetypes.sort();
-    filetypes.unique();
-    
-    bool first = true;
-    for (const auto& ext : filetypes) {
-        if (!first) std::cerr << ", ";
-        
-        std::cerr << ext.substr(1); 
-        first = false;
-    }
-    std::cerr << "]" << std::endl;
-    
-    
-    if (type.raw().find("--export-type-") == 0) {
-        std::cerr << "Note: Use equals sign (=) instead of hyphen (-) in --export-type" << std::endl;
-    }
+                filetypes.sort();
+                filetypes.unique();
+
+                bool first = true;
+                for (auto const &ext : filetypes) {
+                    if (!first)
+                        std::cerr << ", ";
+
+                    std::cerr << ext.substr(1);
+                    first = false;
+                }
+                std::cerr << "]" << std::endl;
+
+                if (type.raw().find("--export-type-") == 0) {
+                    std::cerr << "Note: Use equals sign (=) instead of hyphen (-) in --export-type" << std::endl;
+                }
             }
         }
     }

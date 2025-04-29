@@ -200,8 +200,7 @@ const Glib::ustring SECTION_BASE = NC_("Action Section", "Base");
 const Glib::ustring SECTION_IMPORT = NC_("Action Section", "Import");
 const Glib::ustring SECTION_QUERY = NC_("Action Section", "Query");
 
-std::vector<std::vector<Glib::ustring>> raw_data_base =
-{
+std::vector<std::vector<Glib::ustring>> raw_data_base = {
     // clang-format off
     {"app.inkscape-version",      N_("Inkscape Version"),           SECTION_BASE,    N_("Print Inkscape version and exit")                   },
     {"app.active-window-start",   N_("Active Window: Start Call"),  SECTION_BASE,    N_("Start execution in active window")                  },

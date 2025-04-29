@@ -180,7 +180,8 @@ Application::instance()
 }
 
 // create font-related singletons in the order in which they will be destroyed
-void create_singletons() {
+void create_singletons()
+{
     // font discovery first, because it depends on font factory, so it needs to be destroyed first
     FontDiscovery::get();
     // font factory next, so it is destroyed after font discovery is stopped
